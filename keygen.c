@@ -14,17 +14,32 @@ Date: 2-28-24
 
 
 int main(int argc, char* argv[]) {
-  character = 'A'; // This is used as starting ASCII Value
+  int character = 'A'; // This is used as starting ASCII Value
   int count = 0;
 
   if (argc == 2) {
     int length = atoi(argv[1]);
     while (count < length) {
      int key = rand() % 27;
-      swtich (key) {
-        case 26:
-          printf(" ");
-        case
-    
+     if (key == 26) {
+       printf(" ");  // This is the space character
+     }
+     else if (key < 26 && key > 0) {
+       key = key + character;
+       printf("%c", key);   // The character is immediately printed out after it is calculated
+       }
+     else {
+       fprintf(stderr, "Key is not acceptable");  // Accounts for incorrect key
+      }
+    }
+    printf("\n");
+    return 0;
+  }
+  else if (argc > 2) {
+    fprintf(stderr, "Too many arguments.");
+  }
+  else {
+    exit(1);
+  }
 
 }
