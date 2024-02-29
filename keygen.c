@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - Keygen
-Date: 2-28-24
+Date: 2-29-24
 */
 
 
@@ -28,9 +28,7 @@ int main(int argc, char* argv[]) {
        key = key + character;
        printf("%c", key);   // The character is immediately printed out after it is calculated
        }
-     else {
-       fprintf(stderr, "Key is not acceptable");  // Accounts for incorrect key
-      }
+     count++;
     }
     printf("\n");
     return 0;
