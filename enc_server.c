@@ -28,17 +28,27 @@ void setupAddressStruct(struct sockaddr_in* address,
 
   // The address should be network capable
   address->sin_family = AF_INET;
+
   // Store the port number
   address->sin_port = htons(portNumber);
+
   // Allow a client at any address to connect to this server
   address->sin_addr.s_addr = INADDR_ANY;
 }
+
+/*********************************************************
+FUNCTION: int main
+ARGUMENTS: int argc
+           char *argv[]
+**********************************************************/
+
 
 int main(int argc, char *argv[]){
   int connectionSocket, charsRead;
   char buffer[256];
   struct sockaddr_in serverAddress, clientAddress;
   socklen_t sizeOfClientInfo = sizeof(clientAddress);
+  pid_t pid = -5;
 
   // Check usage & args
   if (argc < 2) { 
@@ -67,6 +77,7 @@ int main(int argc, char *argv[]){
   
   // Accept a connection, blocking if one is not available until one connects
   while(1){
+
     // Accept the connection request which creates a connection socket
     connectionSocket = accept(listenSocket, 
                 (struct sockaddr *)&clientAddress, 
@@ -79,6 +90,15 @@ int main(int argc, char *argv[]){
                           ntohs(clientAddress.sin_addr.s_addr),
                           ntohs(clientAddress.sin_port));
 
+    int pid = fork();
+    if (pid == -1) {
+      error("Error in establishing fork.\n");
+      exit(1);
+    }
+    if (pid == 0) {
+      if (clientConnectionConfirm(connectionSocket)) {
+        
+      }
     // Get the message from the client and display it
     memset(buffer, '\0', 256);
     // Read the client's message from the socket
@@ -102,3 +122,28 @@ int main(int argc, char *argv[]){
   return 0;
 }
 
+
+
+
+}
+
+
+/***********************************************************************
+FUNCTION: clientConnectionConfirm
+
+ARGUMENTS: int socket - potential incoming socket file descriptor
+that we want to confirm is the correct socekt from current
+client in child process
+
+RETURNS: Returns 0 if the client is properly connected to the server
+or 1 if there was an error or the socket file descriptor was not the
+correct one
+************************************************************************/
+
+int clientConnectionConfirm(int socket) {
+  char incoming_buff[100];
+  int char_count = 0;
+  memset(incoming_buff, '\0', sizeof(incoming_buff));
+
+
+}
