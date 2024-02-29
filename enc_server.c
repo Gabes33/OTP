@@ -141,9 +141,14 @@ correct one
 ************************************************************************/
 
 int clientConnectionConfirm(int socket) {
-  char incoming_buff[100];
+  char incoming_buff[99];
   int char_count = 0;
   memset(incoming_buff, '\0', sizeof(incoming_buff));
+  while (char_count == 0) {
+    char_count = recv(socket, incoming_buff, sizeof(incoming_buff), 0);
+   
+  }
+
 
 
 }
