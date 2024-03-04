@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_client
-Date: 2-28-24
+Date: 3-4-24
 */
 
 #include <stdio.h>
@@ -11,6 +11,22 @@ Date: 2-28-24
 #include <sys/types.h>  // ssize_t
 #include <sys/socket.h> // send(),recv()
 #include <netdb.h>      // gethostbyname()
+
+
+
+/***************************************************************
+GLOBAL VARIABLES
+****************************************************************/
+int charsWritten, charsRead;
+char buffer[256];
+
+
+/****************************************************************
+FUNCTION DECLARATIONS
+*****************************************************************/
+int confirmServer(socket);
+
+
 
 /**
 * Client code
@@ -22,8 +38,10 @@ Date: 2-28-24
 // Error function used for reporting issues
 void error(const char *msg) { 
   perror(msg); 
-  exit(0); 
+  exit(1); 
 } 
+
+
 
 // Set up the address struct
 void setupAddressStruct(struct sockaddr_in* address, 
@@ -38,6 +56,8 @@ void setupAddressStruct(struct sockaddr_in* address,
   // Store the port number
   address->sin_port = htons(portNumber);
 
+
+
   // Get the DNS entry for this host name
   struct hostent* hostInfo = gethostbyname(hostname); 
   if (hostInfo == NULL) { 
@@ -51,13 +71,14 @@ void setupAddressStruct(struct sockaddr_in* address,
 }
 
 int main(int argc, char *argv[]) {
-  int socketFD, portNumber, charsWritten, charsRead;
+  int socketFD, portNumber;
   struct sockaddr_in serverAddress;
-  char buffer[256];
+
+
   // Check usage & args
   if (argc < 3) { 
     fprintf(stderr,"USAGE: %s hostname port\n", argv[0]); 
-    exit(0); 
+    exit(1); 
   } 
 
   // Create a socket
@@ -105,4 +126,42 @@ int main(int argc, char *argv[]) {
   // Close the socket
   close(socketFD); 
   return 0;
+}
+
+
+/****************************************************************
+FUNCTION: confirmServer
+
+ARGUMENTS: 
+int socket - potential incoming socket file descriptor
+that we want to confirm is the correct server socket
+
+RETURNS: Returns 1 if the server is properly connected to the client
+or 0 if there was an error or the socket file descriptor was not the
+correct one
+
+
+*****************************************************************/
+
+
+int confirmSever(int socket) {
+    char validation[] = "enc_val";
+    int val_length = strlen(validation);
+    charsWritten = send(socket, validation, val_length, 0);
+    memset(buffer, '\0', sizeof(buffer));
+    if (charsWritten < 0) {
+      error("Client unable to send message on socket");
+    }
+    charsRead = recv(socket, buffer, sizeof(buffer) - 1, 0);
+    if (charsRead < 0) {
+      error("Client unable to read message on socket");
+    }
+    if (strcmp(buffer, "enc_val") != 0) {
+      fprintf(stderr, "Invalid client on socket connection");
+      exit(2);
+    }
+
+
+
+
 }

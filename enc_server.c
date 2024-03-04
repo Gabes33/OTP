@@ -41,6 +41,13 @@ FUNCTION DECLARATIONS
 **********************************************************/
 int clientConnectionConfirm(int socket);
 
+
+
+
+
+
+
+
 /*********************************************************
 FUNCTION: int main
 ARGUMENTS: int argc
@@ -49,8 +56,9 @@ ARGUMENTS: int argc
 
 
 int main(int argc, char *argv[]){
-  int connectionSocket, charsRead;
+  int connectionSocket, charsRead, charsSent, fileSize;
   char buffer[256];
+
   struct sockaddr_in serverAddress, clientAddress;
   socklen_t sizeOfClientInfo = sizeof(clientAddress);
   pid_t pid = -5;
@@ -102,7 +110,10 @@ int main(int argc, char *argv[]){
     }
     if (pid == 0) {
       if (clientConnectionConfirm(connectionSocket)) {
-        char return_conf[] = "enc_server";
+        char return_conf[] = "enc_val";
+        int conf_length = strlen(return_conf);
+        charsRead = send(connectionSocket, return_conf, conf_length, 0);
+
         
       }
     // Get the message from the client and display it
@@ -148,13 +159,13 @@ correct one
 
 int clientConnectionConfirm(int socket) {
   char incoming_buff[99];
-  int char_count = 0;
+  int char_rcv = 0;
 
   //Zero out entire buffer
   memset(incoming_buff, '\0', sizeof(incoming_buff));
-  while (char_count == 0) {
-    char_count = recv(socket, incoming_buff, sizeof(incoming_buff), 0);
-    if ((strcmp(incoming_buff, "enc_client")) == 0) {
+  while (char_rcv == 0) {
+    char_rcv = recv(socket, incoming_buff, sizeof(incoming_buff), 0);
+    if ((strcmp(incoming_buff, "enc_val")) == 0) {
 
       //string received back is equal to confirmation phrase, so return true
       return 1;
