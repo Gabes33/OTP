@@ -37,6 +37,11 @@ void setupAddressStruct(struct sockaddr_in* address,
 }
 
 /*********************************************************
+FUNCTION DECLARATIONS
+**********************************************************/
+int clientConnectionConfirm(int socket);
+
+/*********************************************************
 FUNCTION: int main
 ARGUMENTS: int argc
            char *argv[]
@@ -97,6 +102,7 @@ int main(int argc, char *argv[]){
     }
     if (pid == 0) {
       if (clientConnectionConfirm(connectionSocket)) {
+        char return_conf[] = "enc_server";
         
       }
     // Get the message from the client and display it
@@ -135,20 +141,29 @@ ARGUMENTS: int socket - potential incoming socket file descriptor
 that we want to confirm is the correct socekt from current
 client in child process
 
-RETURNS: Returns 0 if the client is properly connected to the server
-or 1 if there was an error or the socket file descriptor was not the
+RETURNS: Returns 1 if the client is properly connected to the server
+or 0 if there was an error or the socket file descriptor was not the
 correct one
 ************************************************************************/
 
 int clientConnectionConfirm(int socket) {
   char incoming_buff[99];
   int char_count = 0;
+
+  //Zero out entire buffer
   memset(incoming_buff, '\0', sizeof(incoming_buff));
   while (char_count == 0) {
     char_count = recv(socket, incoming_buff, sizeof(incoming_buff), 0);
-   
+    if ((strcmp(incoming_buff, "enc_client")) == 0) {
+
+      //string received back is equal to confirmation phrase, so return true
+      return 1;
   }
-
-
-
+    else {
+      return 0;
+    }
+    memset(incoming_buff, '\0', sizeof(incoming_buff));
+  }
+ return 0;
 }
+
