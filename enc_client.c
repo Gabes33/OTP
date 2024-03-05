@@ -8,6 +8,8 @@ Date: 3-4-24
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/types.h>  // ssize_t
 #include <sys/socket.h> // send(),recv()
 #include <netdb.h>      // gethostbyname()
@@ -24,8 +26,8 @@ char buffer[256];
 /****************************************************************
 FUNCTION DECLARATIONS
 *****************************************************************/
-int confirmServer(socket);
-
+int confirmServer(int socket);
+int checkLength(char strFile[]);
 
 
 /**
@@ -70,6 +72,15 @@ void setupAddressStruct(struct sockaddr_in* address,
         hostInfo->h_length);
 }
 
+/*******************************************************************
+FUNCTION: int main
+
+ARGUMENTS: 
+int argc
+char *argv[]
+
+********************************************************************/
+
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
@@ -94,10 +105,21 @@ int main(int argc, char *argv[]) {
   if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
     error("CLIENT: ERROR connecting");
   }
+
+  //Confirm connection with server is correct
+  int checkConnection = confirmServer(socketFD);
+  if (checkConnection == 2) {
+    exit(2);
+  }
+  else if (checkConnection) {
+
+
   // Get input message from user
   printf("CLIENT: Enter text to send to the server, and then hit enter: ");
+
   // Clear out the buffer array
   memset(buffer, '\0', sizeof(buffer));
+
   // Get input from the user, trunc to buffer - 1 chars, leaving \0
   fgets(buffer, sizeof(buffer) - 1, stdin);
   // Remove the trailing \n that fgets adds
@@ -123,6 +145,7 @@ int main(int argc, char *argv[]) {
   }
   printf("CLIENT: I received this from the server: \"%s\"\n", buffer);
 
+  }
   // Close the socket
   close(socketFD); 
   return 0;
@@ -130,7 +153,7 @@ int main(int argc, char *argv[]) {
 
 
 /****************************************************************
-FUNCTION: confirmServer
+FUNCTION: int confirmServer
 
 ARGUMENTS: 
 int socket - potential incoming socket file descriptor
@@ -151,17 +174,37 @@ int confirmSever(int socket) {
     memset(buffer, '\0', sizeof(buffer));
     if (charsWritten < 0) {
       error("Client unable to send message on socket");
+      return 0;
     }
     charsRead = recv(socket, buffer, sizeof(buffer) - 1, 0);
     if (charsRead < 0) {
       error("Client unable to read message on socket");
+      return 0;
     }
     if (strcmp(buffer, "enc_val") != 0) {
       fprintf(stderr, "Invalid client on socket connection");
-      exit(2);
+      return 2;
     }
 
-
-
+   return 1;
 
 }
+
+/********************************************************************
+FUNCTION: int checkLength
+
+ARGUMENTS:
+char strFile - String that can either be the message or the key that has
+been generated. We open this file and check the length.
+
+RETURNS: The length size is returned as an int.
+**********************************************************************/
+int checkLength(char strFile[]) {
+  int file = open(strFile, O_RDONLY);
+  int fileLength = lseek(file, 0, SEEK_END); // We look for the offset of the file and return number of bytes to this offset
+  close(file);
+  return fileLength;
+
+}
+
+
