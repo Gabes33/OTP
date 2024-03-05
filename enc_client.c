@@ -111,8 +111,11 @@ int main(int argc, char *argv[]) {
   if (checkConnection == 2) {
     exit(2);
   }
-  else if (checkConnection) {
+  else if (checkConnection == 1) {
 
+  if (checkLength(argv[1]) > checkLength(argv[2])) {
+        error("Message and key size are not equal");
+        }
 
   // Get input message from user
   printf("CLIENT: Enter text to send to the server, and then hit enter: ");
@@ -167,7 +170,7 @@ correct one
 *****************************************************************/
 
 
-int confirmSever(int socket) {
+int confirmServer(int socket) {
     char validation[] = "enc_val";
     int val_length = strlen(validation);
     charsWritten = send(socket, validation, val_length, 0);

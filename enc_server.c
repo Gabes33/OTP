@@ -13,6 +13,12 @@ Date: 2-28-24
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+/*********************************************************
+GLOBAL VARIABLES
+**********************************************************/
+char buffer[256];
+int fileSize, charsRead, charsSent;
+
 // Error function used for reporting issues
 void error(const char *msg) {
   perror(msg);
@@ -40,7 +46,7 @@ void setupAddressStruct(struct sockaddr_in* address,
 FUNCTION DECLARATIONS
 **********************************************************/
 int clientConnectionConfirm(int socket);
-
+int rcvSize(int socket);
 
 
 
@@ -56,8 +62,7 @@ ARGUMENTS: int argc
 
 
 int main(int argc, char *argv[]){
-  int connectionSocket, charsRead, charsSent, fileSize;
-  char buffer[256];
+  int connectionSocket;
 
   struct sockaddr_in serverAddress, clientAddress;
   socklen_t sizeOfClientInfo = sizeof(clientAddress);
@@ -112,25 +117,37 @@ int main(int argc, char *argv[]){
       if (clientConnectionConfirm(connectionSocket)) {
         char return_conf[] = "enc_val";
         int conf_length = strlen(return_conf);
-        charsRead = send(connectionSocket, return_conf, conf_length, 0);
-
         
-      }
-    // Get the message from the client and display it
-    memset(buffer, '\0', 256);
-    // Read the client's message from the socket
-    charsRead = recv(connectionSocket, buffer, 255, 0); 
-    if (charsRead < 0){
-      error("ERROR reading from socket");
-    }
-    printf("SERVER: I received this from the client: \"%s\"\n", buffer);
+        //Send the confirmation that the sever got the validation string
+        charsSent = send(connectionSocket, return_conf, conf_length, 0);
+        fileSize = rcvSize(connectionSocket);
+        if (fileSize == 0) {
+          error("File size is zero");
+        }
+        else if (fileSize < 0) {
+          error("Error retreiving file size");
+        }
 
-    // Send a Success message back to the client
-    charsRead = send(connectionSocket, 
+        // Get the message from the client and display it
+        memset(buffer, '\0', 256);
+       
+        // Read the client's message from the socket
+        charsRead = recv(connectionSocket, buffer, 255, 0); 
+        if (charsRead < 0){
+         error("ERROR reading from socket");
+         }
+        printf("SERVER: I received this from the client: \"%s\"\n", buffer);
+
+       // Send a Success message back to the client
+       charsRead = send(connectionSocket, 
                     "I am the server, and I got your message", 39, 0); 
-    if (charsRead < 0){
-      error("ERROR writing to socket");
-    }
+       if (charsRead < 0){
+        error("ERROR writing to socket");
+       }
+       
+
+      }
+
     // Close the connection socket for this client
     close(connectionSocket); 
   }
@@ -146,9 +163,10 @@ int main(int argc, char *argv[]){
 
 
 /***********************************************************************
-FUNCTION: clientConnectionConfirm
+FUNCTION: int clientConnectionConfirm
 
-ARGUMENTS: int socket - potential incoming socket file descriptor
+ARGUMENTS:
+int socket - potential incoming socket file descriptor
 that we want to confirm is the correct socekt from current
 client in child process
 
@@ -178,3 +196,26 @@ int clientConnectionConfirm(int socket) {
  return 0;
 }
 
+
+
+/****************************************************************************
+FUNCTION: int rcvSize
+
+ARGUMENTS:
+int socket - client socket file descriptor that can send a file over of a
+variable size
+
+RETURNS: Returns the number of bytes that the socekt has sent over through the
+buffer. We can assign the result of the rcv() function to a variable and convert
+that variable to an integer to get the size of the file sent through the socket
+*******************************************************************************/
+int rcvSize(int socket) {
+  memset(buffer, '\0', sizeof(buffer));                           //clear the buffer
+  while (charsRead == 0) {
+    charsRead = recv(socket, buffer, sizeof(buffer) - 1, 0);      //We get the size of the buffer -1 to not account for newline character
+    }
+    fileSize = atoi(buffer);
+    memset(buffer, '\0', sizeof(buffer));
+    return fileSize;
+
+}
