@@ -110,7 +110,7 @@ int main(int argc, char *argv[]){
                           ntohs(clientAddress.sin_addr.s_addr),
                           ntohs(clientAddress.sin_port));
 
-    int pid = fork();
+    pid = fork();
     if (pid == -1) {
       error("Error in establishing fork.\n");
       exit(1);
@@ -131,6 +131,18 @@ int main(int argc, char *argv[]){
         }
 
         charsSent = send(connectionSocket, "confirm size", 12, 0);
+
+        rcvMsgInput(connectionSocket, fileSize);
+        if (sizeof(msgBuff) < fileSize) {
+          error("Could not get message input");
+        }
+        charsSent = send(connectionSocket, "confirm message", 15, 0);
+
+        rcvKeyInput(connectionSocket, fileSize);
+        if (sizeof(keyBuff) < fileSize) {
+          error("Could not get key input");
+        }
+        charsSent = send(connectionSocket, "confirm key", 11, 0);
 
         // Get the message from the client and display it
         memset(buffer, '\0', 256);
