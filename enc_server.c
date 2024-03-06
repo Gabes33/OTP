@@ -51,7 +51,8 @@ int clientConnectionConfirm(int socket);
 int rcvSize(int socket);
 void rcvMsgInput(int socket, int size);
 void rcvKeyInput(int socket, int size);
-
+void encMSg(char message[], char key[], int size);
+int convertInt(int curInt);
 
 
 
@@ -309,7 +310,7 @@ RETURNS: Nothing, but the message buffer now contains the encoded message
 void encMsg(char message[], char key[], int size) {
 
   // We start at the first capital letter A, which is 0 for our numerical value
-  int letter = 'A', msgChar, keyChar;
+  int startLetter = 'A', msgChar, keyChar;
 
   for (int i = 0; i < size; i++) {
 
@@ -320,17 +321,48 @@ void encMsg(char message[], char key[], int size) {
     //We are looking at ASCII Table values now, so if the integer is 10, it is a new line character,
     //so we are at the end of the message and do not want to look at the new line character
     if (msgChar != 10) {
-      if 
+      msgChar = convertInt(msgChar) + convertInt(keyChar);
+      msgChar = msgChar % 27;
 
-    }
+      //We have converted the integer to the correct integer and then used modulo 27 to convert to the right
+      //numerical value. If the integer is 26, the numerical value is a space character. Otherwise, we take the
+      //converted integer and add the start letter, which ASCII value is 65, to it to get the correct capitol letter
+      //as a ASCII value. This is then converted back to a character and assigned to the correct inedex of the message
+      //buffer
 
+      if (msgChar == 26) {
+        message[i] = ' ';
+      }
+      else {
+        msgChar = startLetter + msgChar;
+        message[i] = (char)msgChar;
 
+          }
 
+      }
 
-
-
-
-  }
-
+      }
+  return;
 
 }
+
+/*************************************************************************************
+FUNCTION: int convertInt
+
+ARGUMENTS:
+int curInt - The current character in that has been converted to an integer and needs
+to be the correct value for encodeing the message
+
+RETURNS: The converted character to intgeger value is returned as the correct integer
+value for caluclation purposes
+**************************************************************************************/
+int convertInt(int curInt) {
+  if (curInt == 32) {
+    curInt = 26;
+  }
+  else {
+    curInt = curInt - 65;
+  }
+  return curInt;
+}
+
