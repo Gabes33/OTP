@@ -145,7 +145,7 @@ int main(int argc, char *argv[]){
         charsSent = send(connectionSocket, "confirm key", 11, 0);
 
         // Get the message from the client and display it
-        memset(buffer, '\0', 256);
+        memset(buffer, '\0', sizeof(buffer));
        
         // Read the client's message from the socket
         charsRead = recv(connectionSocket, buffer, 255, 0); 
@@ -243,9 +243,10 @@ FUNCTION: void rcvMsgInput
 ARGUMENTS:
 int socket - client socket file descriptor that can send a file over of the
 expected size
+
 int size - the size expected of the message being sent over
 
-RETURNS - Nothing, but the message buffer is filled with the incoming message
+RETURNS: Nothing, but the message buffer is filled with the incoming message
 *****************************************************************************/
 void rcvMsgInput(int socket, int size) {
   int bytes = 0;
@@ -270,9 +271,10 @@ FUNCTION: void rcvKeyInput
 ARGUMENTS:
 int socket - client socket file descriptor that can send a file over of the
 expected size
+
 int size - the size expected of tbe  key being sent over
 
-RETURNS - Nothing, but the key buffer is filled with the incoming key message
+RETURNS: Nothing, but the key buffer is filled with the incoming key message
 *****************************************************************************/
 void rcvKeyInput(int socket, int size) {
   int bytes = 0;
@@ -286,4 +288,49 @@ void rcvKeyInput(int socket, int size) {
     strcat(keyBuff, buffer);
   }
   return;
+}
+
+
+/*****************************************************************************
+FUNCTION: void encMsg
+
+ARGUMENTS:
+char message[] - a buffer that conatains the data for the message the client
+socket has sent
+
+char key[] - a buffer that contains the data for the key the client socket has
+sent
+
+int size - the size in bytes of the message and key sent by the client socket.
+As expected, the message and key need to be the same size
+
+RETURNS: Nothing, but the message buffer now contains the encoded message
+******************************************************************************/
+void encMsg(char message[], char key[], int size) {
+
+  // We start at the first capital letter A, which is 0 for our numerical value
+  int letter = 'A', msgChar, keyChar;
+
+  for (int i = 0; i < size; i++) {
+
+    //We convert the characters in both the message and the key to integers
+    msgChar = (int)message[i];
+    keyChar = (int)key[i];
+    
+    //We are looking at ASCII Table values now, so if the integer is 10, it is a new line character,
+    //so we are at the end of the message and do not want to look at the new line character
+    if (msgChar != 10) {
+      if 
+
+    }
+
+
+
+
+
+
+
+  }
+
+
 }
