@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_server
-Date: 2-28-24
+Date: 3-6-24
 */
 
 
@@ -12,6 +12,7 @@ Date: 2-28-24
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/wait.h>
 
 /*********************************************************
 GLOBAL VARIABLES
@@ -51,7 +52,7 @@ int clientConnectionConfirm(int socket);
 int rcvSize(int socket);
 void rcvMsgInput(int socket, int size);
 void rcvKeyInput(int socket, int size);
-void encMSg(char message[], char key[], int size);
+void encMsg(char message[], char key[], int size);
 int convertInt(int curInt);
 
 
@@ -123,6 +124,8 @@ int main(int argc, char *argv[]){
         
         //Send the confirmation that the sever got the validation string
         charsSent = send(connectionSocket, return_conf, conf_length, 0);
+
+
         fileSize = rcvSize(connectionSocket);
         if (fileSize == 0) {
           error("File size is zero");
@@ -145,9 +148,26 @@ int main(int argc, char *argv[]){
         }
         charsSent = send(connectionSocket, "confirm key", 11, 0);
 
+        encMsg(msgBuff, keyBuff, fileSize);
+
         // Get the message from the client and display it
         memset(buffer, '\0', sizeof(buffer));
-       
+        
+        //We reset charsSent and charsRead to 0
+        charsSent = 0;
+        charsRead = 0;
+
+        // The message buffer is sent to the client until charsSent is equal
+        // to the fileSize variable. The length of the message buffer is kept track of
+        // through each iteration. Once all bytes are sent, the child process exits
+
+        while (charsSent < fileSize) {
+          int msgLength = strlen(msgBuff);
+          charsSent += send(connectionSocket, msgBuff, msgLength, 0);
+        }
+        exit(0);
+      
+        /************************************************************
         // Read the client's message from the socket
         charsRead = recv(connectionSocket, buffer, 255, 0); 
         if (charsRead < 0){
@@ -161,21 +181,27 @@ int main(int argc, char *argv[]){
        if (charsRead < 0){
         error("ERROR writing to socket");
        } 
-
+      *****************************************************************/
       }
-
-    // Close the connection socket for this client
-    close(connectionSocket); 
+      else {
+        error("The connection with the client socket could not be confirmed");
+          break;
+      }
+      exit(0);
+    
+    // The parent process will continue on with other client sockets instead of
+    // waiting on the current client socket child process
+    int pidExitStatus;
+    waitpid(pid, &pidExitStatus, WNOHANG);
+    close(connectionSocket);
+      }
   }
   // Close the listening socket
   close(listenSocket); 
   return 0;
-}
 
+  }
 
-
-
-}
 
 
 /***********************************************************************
