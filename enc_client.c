@@ -123,6 +123,8 @@ int main(int argc, char *argv[]) {
     if (msgLength != keyLength) {
         error("Message and key size are not equal");
         }
+    validateFile(argv[1], msgLength);
+    validateFile(argv[2], keyLength);
 
     // Get input message from user
     // printf("CLIENT: Enter text to send to the server, and then hit enter: ");
@@ -136,13 +138,38 @@ int main(int argc, char *argv[]) {
     charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
     memset(buffer, '\0', sizeof(buffer));
 
+    //We wait to recieve the correct confirmation message that the server recieved the size
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    
-    if strcmp(buffer, "confirm size") != 0) {
+    if (strcmp(buffer, "confirm size") != 0) {
       error("There was an error confirming the size with the server");
     }
+    memset(buffer, '\0', sizeof(buffer));
+
+    //We send the message file contents to the server and wait to confirm the server recieved
+    //the message
+    sendFile(socketFD, argv[1], msgLength);
+    while (charsRead == 0) {
+      charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
+    }
+    if (strcmp(buffer, "confirm message") != 0) {
+      error("There was an error confirming the server received the message");
+    }
+    memset(buffer, '\0', sizeof(buffer));
+    
+    // We send the key file contents to the server and wait to confirm the server recieved the
+    // key
+    sendFile(socketFD, buffer, sizeof(buffer) - 1, 0);
+    while (charsRead == 0) {
+      charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
+    }
+    if (strcmp(buffer, "confirm key") != 0) {
+      error("There was an error confirming the server recieved the key");
+    }
+    memset(buffer, '\0', sizeof(buffer));
+
+
 
       
 
