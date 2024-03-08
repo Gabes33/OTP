@@ -31,7 +31,8 @@ FUNCTION DECLARATIONS
 *****************************************************************/
 int confirmServer(int socket);
 int checkLength(char strFile[]);
-void storeFile(char rcvBuff[], char strFile[]);
+void sendFile(int socket, char strFile, int length);
+void validateFile(char strFile[], int length);
 
 
 /**
@@ -136,11 +137,14 @@ int main(int argc, char *argv[]) {
     memset(buffer, '\0', sizeof(buffer));
 
     while (charsRead == 0) {
-      charsRead = rcv(socketFD, buffer, sizeof(buffer) - 1, 0);
+      charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
     
-    if strcmp(buffer, "confirm size") != 0)
+    if strcmp(buffer, "confirm size") != 0) {
+      error("There was an error confirming the size with the server");
+    }
 
+      
 
     // Get input from the user, trunc to buffer - 1 chars, leaving \0
     //fgets(buffer, sizeof(buffer) - 1, stdin);
@@ -273,3 +277,50 @@ void sendFile(int socket, char strFile[], int length){
 
 }
 
+
+/*************************************************************************
+FUNCTION: void validateFile
+
+ARGUMENTS:
+
+char strFile[] - the file that is recieved to be validated. The function checks
+for valid capital letters A through Z and and the space character. If any other
+character is found, and error is returned. If the end of the file is reached, the
+function returns
+
+int length - the length the file is expected to be, whether it is the message file
+or the key file
+
+RETURNS: Nothing, but if the file is valid, the function will just return instead of
+returning an error
+**************************************************************************/
+void validateFile(char strFile[], int length) {
+  
+  FILE *file = fopen(strFile, "r");
+  if (file == NULL) {
+    error("Error occured when opening the file");
+  }
+  
+
+  for (int i = 0; i < length; i++) {
+    
+    int curChar = fgetc(file);
+
+    if ((curChar >= 65) && (curChar <= 90)) {
+      continue;
+    }
+    else if (curChar == 32) {
+      continue;
+    }
+    else if (curChar == 10) {
+      break;
+    }
+    else {
+      error("Invalid character or characters in given file");
+    }
+  }
+  fclose(file);
+  return;
+
+
+}
