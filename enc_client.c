@@ -31,7 +31,7 @@ FUNCTION DECLARATIONS
 *****************************************************************/
 int confirmServer(int socket);
 int checkLength(char strFile[]);
-void storeFile(char rcvBuff[], char strFile);
+void storeFile(char rcvBuff[], char strFile[]);
 
 
 /**
@@ -129,12 +129,17 @@ int main(int argc, char *argv[]) {
    // Clear out the buffer array
     memset(buffer, '\0', sizeof(buffer));
 
-    //We want to send the size of the message and key to the server socket. This can
+    //We want to send the size of the message and key to the server socket. This should
     //be sent as a string
     sprintf(buffer, "%d", msgLength);
     charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
     memset(buffer, '\0', sizeof(buffer));
 
+    while (charsRead == 0) {
+      charsRead = rcv(socketFD, buffer, sizeof(buffer) - 1, 0);
+    }
+    
+    if strcmp(buffer, "confirm size") != 0)
 
 
     // Get input from the user, trunc to buffer - 1 chars, leaving \0
@@ -229,26 +234,41 @@ int checkLength(char strFile[]) {
 
 
 /*********************************************************************
-FUNCTION: void storeFile
+FUNCTION: void sendFile
 
 ARGUMENTS:
-char rcvBuff[] - Buffer givent that file will be read and stored in. This
-can be either the message or the key
+int socket - the file descriptor associated with the server socket the client
+socket is connected to
 
 char strFile[] - String file that can either be message or key file that has been
-generated. We will open this file for reading
+generated. We will open this file for reading and then sending all in one sweep
 
-RETURNS: Nothing, but the rcvBuff buffer now contains the contents of the strFile
+int length - the length that we expect the file, which is the message or the key,
+to be
+
+RETURNS: Nothing, but the file has been read and sent to the server socket through
+the buffer
 ***********************************************************************/
-void storeFile(char rcvBuff[], char strFile[]) {
- FILE *fp = fopen(strFile, "r");
- if (fp == NULL) {
-   error("File is empty");
- }
- size_t rcvBuffLength = fread(rcvBuff, sizeof(char), sizeof(*rcvBuff), fp);
- rcvBuff[rcvBuffLength++] = '\0';
- fclose(fp);
+void sendFile(int socket, char strFile[], int length){
 
+ memset(buffer, '\0', sizeof(buffer));
+ int curBytes = 0;
+ int strF = open(strFile, O_RDONLY);
+ 
+ int totalBytes = 0;
+ while (totalBytes < length) {
+   memset(buffer, '\0', sizeof(buffer));
+
+   //We read the file without accounting for the newline character
+   curBytes = read(strF, buffer, sizeof(buffer) -1);
+   int buffLength = strlen(buffer);
+
+   //Now we will send the current set of bytes over.
+   totalBytes += send(socket, buffer, buffLength, 0);
+ }
+ memset(buffer, '\0', sizeof(buffer));
+ close(strF);
+ return;
 
 
 }
