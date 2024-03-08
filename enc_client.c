@@ -21,6 +21,9 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[256];
+char msgBuff[1000];
+char keyBuff[1000];
+char encMsg[1000];
 
 
 /****************************************************************
@@ -28,6 +31,7 @@ FUNCTION DECLARATIONS
 *****************************************************************/
 int confirmServer(int socket);
 int checkLength(char strFile[]);
+void storeFile(char rcvBuff[], char strFile);
 
 
 /**
@@ -112,41 +116,51 @@ int main(int argc, char *argv[]) {
     exit(2);
   }
   else if (checkConnection == 1) {
-
-  if (checkLength(argv[1]) > checkLength(argv[2])) {
+    
+    int msgLength = checkLength(argv[1]);
+    int keyLength = checkLength(argv[2]);
+    if (msgLength != keyLength) {
         error("Message and key size are not equal");
         }
 
-  // Get input message from user
-  printf("CLIENT: Enter text to send to the server, and then hit enter: ");
+    // Get input message from user
+    // printf("CLIENT: Enter text to send to the server, and then hit enter: ");
 
-  // Clear out the buffer array
-  memset(buffer, '\0', sizeof(buffer));
+   // Clear out the buffer array
+    memset(buffer, '\0', sizeof(buffer));
 
-  // Get input from the user, trunc to buffer - 1 chars, leaving \0
-  fgets(buffer, sizeof(buffer) - 1, stdin);
-  // Remove the trailing \n that fgets adds
-  buffer[strcspn(buffer, "\n")] = '\0'; 
+    //We want to send the size of the message and key to the server socket. This can
+    //be sent as a string
+    sprintf(buffer, "%d", msgLength);
+    charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
+    memset(buffer, '\0', sizeof(buffer));
 
-  // Send message to server
-  // Write to the server
-  charsWritten = send(socketFD, buffer, strlen(buffer), 0); 
-  if (charsWritten < 0){
-    error("CLIENT: ERROR writing to socket");
-  }
-  if (charsWritten < strlen(buffer)){
-    printf("CLIENT: WARNING: Not all data written to socket!\n");
-  }
 
-  // Get return message from server
-  // Clear out the buffer again for reuse
-  memset(buffer, '\0', sizeof(buffer));
-  // Read data from the socket, leaving \0 at end
-  charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0); 
-  if (charsRead < 0){
-    error("CLIENT: ERROR reading from socket");
-  }
-  printf("CLIENT: I received this from the server: \"%s\"\n", buffer);
+
+    // Get input from the user, trunc to buffer - 1 chars, leaving \0
+    //fgets(buffer, sizeof(buffer) - 1, stdin);
+    // Remove the trailing \n that fgets adds
+    buffer[strcspn(buffer, "\n")] = '\0'; 
+
+    // Send message to server
+    // Write to the server
+    charsWritten = send(socketFD, buffer, strlen(buffer), 0); 
+    if (charsWritten < 0){
+      error("CLIENT: ERROR writing to socket");
+    }
+    if (charsWritten < strlen(buffer)){
+      printf("CLIENT: WARNING: Not all data written to socket!\n");
+    }
+
+    // Get return message from server
+    // Clear out the buffer again for reuse
+    memset(buffer, '\0', sizeof(buffer));
+    // Read data from the socket, leaving \0 at end
+    charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0); 
+    if (charsRead < 0){
+      error("CLIENT: ERROR reading from socket");
+    }
+    printf("CLIENT: I received this from the server: \"%s\"\n", buffer);
 
   }
   // Close the socket
@@ -197,17 +211,45 @@ int confirmServer(int socket) {
 FUNCTION: int checkLength
 
 ARGUMENTS:
-char strFile - String that can either be the message or the key that has
+char strFile[] - String file that can either be the message or the key that has
 been generated. We open this file and check the length.
 
 RETURNS: The length size is returned as an int.
 **********************************************************************/
 int checkLength(char strFile[]) {
   int file = open(strFile, O_RDONLY);
+  if (file < 0) {
+    error("Could not successfully open file");
+  }
   int fileLength = lseek(file, 0, SEEK_END); // We look for the offset of the file and return number of bytes to this offset
   close(file);
   return fileLength;
 
 }
 
+
+/*********************************************************************
+FUNCTION: void storeFile
+
+ARGUMENTS:
+char rcvBuff[] - Buffer givent that file will be read and stored in. This
+can be either the message or the key
+
+char strFile[] - String file that can either be message or key file that has been
+generated. We will open this file for reading
+
+RETURNS: Nothing, but the rcvBuff buffer now contains the contents of the strFile
+***********************************************************************/
+void storeFile(char rcvBuff[], char strFile[]) {
+ FILE *fp = fopen(strFile, "r");
+ if (fp == NULL) {
+   error("File is empty");
+ }
+ size_t rcvBuffLength = fread(rcvBuff, sizeof(char), sizeof(*rcvBuff), fp);
+ rcvBuff[rcvBuffLength++] = '\0';
+ fclose(fp);
+
+
+
+}
 
