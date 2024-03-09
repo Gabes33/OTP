@@ -170,7 +170,12 @@ int main(int argc, char *argv[]) {
     }
     memset(buffer, '\0', sizeof(buffer));
 
-    
+    //Receive the encrypted message and redirect it to stdout
+    rcvEncryptMsg(socketFD, msgLength);
+    printf("%s", msgBuff);
+  }
+
+
 
      
     /*
@@ -199,8 +204,10 @@ int main(int argc, char *argv[]) {
       error("CLIENT: ERROR reading from socket");
     }
     printf("CLIENT: I received this from the server: \"%s\"\n", buffer);
-    */
-  }
+   
+    */ 
+
+
   // Close the socket
   close(socketFD); 
   return 0;
@@ -378,7 +385,7 @@ void rcvEncryptMsg(int socket, int length) {
 
   // We iterate until the total bytes are one less than the length to account for the newline character
   while (totalBytes < length - 1) {
-    bytes = 0
+    bytes = 0;
     bytes = recv(socket, buffer, sizeof(buffer), 0);
     
     //We want to add the bytes in buffer to the message buffer as a string
@@ -387,7 +394,7 @@ void rcvEncryptMsg(int socket, int length) {
 
     //We now add the converted string to the messsage buffer
     strcat(msgBuff, buffer);
-    memset(buffer '\0', sizeof(buffer));
+    memset(buffer, '\0', sizeof(buffer));
   }
   
   return;
