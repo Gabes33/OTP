@@ -31,8 +31,9 @@ FUNCTION DECLARATIONS
 *****************************************************************/
 int confirmServer(int socket);
 int checkLength(char strFile[]);
-void sendFile(int socket, char strFile, int length);
+void sendFile(int socket, char strFile[], int length);
 void validateFile(char strFile[], int length);
+void rcvEncryptMsg(int socket, int length);
 
 
 /**
@@ -160,7 +161,7 @@ int main(int argc, char *argv[]) {
     
     // We send the key file contents to the server and wait to confirm the server recieved the
     // key
-    sendFile(socketFD, buffer, sizeof(buffer) - 1, 0);
+    sendFile(socketFD, argv[2], keyLength);
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
@@ -169,9 +170,10 @@ int main(int argc, char *argv[]) {
     }
     memset(buffer, '\0', sizeof(buffer));
 
+    
 
-
-      
+     
+    /*
 
     // Get input from the user, trunc to buffer - 1 chars, leaving \0
     //fgets(buffer, sizeof(buffer) - 1, stdin);
@@ -197,7 +199,7 @@ int main(int argc, char *argv[]) {
       error("CLIENT: ERROR reading from socket");
     }
     printf("CLIENT: I received this from the server: \"%s\"\n", buffer);
-
+    */
   }
   // Close the socket
   close(socketFD); 
@@ -257,7 +259,8 @@ int checkLength(char strFile[]) {
   if (file < 0) {
     error("Could not successfully open file");
   }
-  int fileLength = lseek(file, 0, SEEK_END); // We look for the offset of the file and return number of bytes to this offset
+  // We look for the offset of the file and return the number of bytes to this offset
+  int fileLength = lseek(file, 0, SEEK_END);
   close(file);
   return fileLength;
 
@@ -305,7 +308,7 @@ void sendFile(int socket, char strFile[], int length){
 }
 
 
-/*************************************************************************
+/*************************************************************************************
 FUNCTION: void validateFile
 
 ARGUMENTS:
@@ -320,7 +323,7 @@ or the key file
 
 RETURNS: Nothing, but if the file is valid, the function will just return instead of
 returning an error
-**************************************************************************/
+**************************************************************************************/
 void validateFile(char strFile[], int length) {
   
   FILE *file = fopen(strFile, "r");
@@ -351,3 +354,44 @@ void validateFile(char strFile[], int length) {
 
 
 }
+
+
+/********************************************************************************************
+FUNCTION: void rcvEncryptMsg
+
+ARGUMENTS:
+
+int socket - the server socket file descriptor that the client socket is connected to
+
+int length - the expected length of the encoded message, which will be the same length as
+the message and key files
+
+RETURNS: Nothing, but the global encMsg buffer will contain the encrypted message
+*********************************************************************************************/
+void rcvEncryptMsg(int socket, int length) {
+
+  memset(encMsg, '\0', sizeof(encMsg));
+  memset(buffer, '\0', sizeof(buffer));
+  
+  int totalBytes = 0;
+  int bytes = 0;
+
+  // We iterate until the total bytes are one less than the length to account for the newline character
+  while (totalBytes < length - 1) {
+    bytes = 0
+    bytes = recv(socket, buffer, sizeof(buffer), 0);
+    
+    //We want to add the bytes in buffer to the message buffer as a string
+    sprintf(buffer, "%s", buffer);
+    totalBytes += bytes;
+
+    //We now add the converted string to the messsage buffer
+    strcat(msgBuff, buffer);
+    memset(buffer '\0', sizeof(buffer));
+  }
+  
+  return;
+
+}
+
+
