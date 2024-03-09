@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 
   if (argc == 2) {
     int length = atoi(argv[1]);
-    while (count <= length) {
+    while (count < length) {
      int key = rand() % 27;
      if (key == 26) {
        printf(" ");  // This is the space character
