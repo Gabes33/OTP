@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
      if (key == 26) {
        printf(" ");  // This is the space character
      }
-     else if (key < 26 && key > 0) {
+     else if (key < 26 && key >= 0) {
        key = key + character;
        printf("%c", key);   // The character is immediately printed out after it is calculated
        }
