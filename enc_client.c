@@ -122,7 +122,7 @@ int main(int argc, char *argv[]) {
     
     int msgLength = checkLength(argv[1]);
     int keyLength = checkLength(argv[2]);
-    if (msgLength != keyLength) {
+    if (msgLength > keyLength) {
         error("Message and key size are not equal");
         }
     validateFile(argv[1], msgLength);
