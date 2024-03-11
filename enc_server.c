@@ -137,7 +137,6 @@ int main(int argc, char *argv[]){
         }
 
         charsSent = send(connectionSocket, "confirmSize", 11, 0);
-
         rcvMsgInput(connectionSocket, fileSize);
         if (sizeof(msgBuff) < fileSize) {
           fprintf(stderr, "Could not get messge input");
