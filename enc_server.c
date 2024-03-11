@@ -115,7 +115,7 @@ int main(int argc, char *argv[]){
                           ntohs(clientAddress.sin_port));
 
     pid = fork();
-    if (pid == - 1) {
+    if (pid == -1) {
       error("Error in establishing fork.\n");
       exit(1);
     }
@@ -139,7 +139,7 @@ int main(int argc, char *argv[]){
         charsSent = send(connectionSocket, "confirmSize", 11, 0);
 
         rcvMsgInput(connectionSocket, fileSize);
-       if (sizeof(msgBuff) < fileSize) {
+        if (sizeof(msgBuff) < fileSize) {
           fprintf(stderr, "Could not get messge input");
         }
         charsSent = send(connectionSocket, "confirmMessage", 14, 0);
@@ -147,7 +147,7 @@ int main(int argc, char *argv[]){
         rcvKeyInput(connectionSocket, fileSize);
        if (sizeof(keyBuff) < fileSize) {
           fprintf(stderr, "Could not get key input.");
-        }
+       } 
         charsSent = send(connectionSocket, "confirmKey", 10, 0);
 
         encMsg(msgBuff, keyBuff, fileSize);
@@ -186,19 +186,17 @@ int main(int argc, char *argv[]){
       *****************************************************************/
       }
       else {
-        char errorMsg[] = "ClientError";
-        charsSent = send(connectionSocket, errorMsg, sizeof(errorMsg), 0);
         error("The connection with the client socket could not be confirmed");
           break;
       }
       exit(0);
-    }
+    
     // The parent process will continue on with other client sockets instead of
     // waiting on the current client socket child process
     int pidExitStatus;
     waitpid(pid, &pidExitStatus, WNOHANG);
     close(connectionSocket);
-      
+      }
   }
   // Close the listening socket
   close(listenSocket); 
@@ -235,7 +233,6 @@ int clientConnectionConfirm(int socket) {
       return 1;
   }
     else {
-      fprintf(stderr, "Client validation phrase did not match.");
       return 0;
     }
     memset(incoming_buff, '\0', sizeof(incoming_buff));
