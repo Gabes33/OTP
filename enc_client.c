@@ -91,13 +91,14 @@ int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
 
-
   // Check usage & args
-  if (argc < 3) { 
+  if (argc < 4) { 
     fprintf(stderr,"USAGE: %s hostname port\n", argv[0]); 
     exit(1); 
   } 
 
+  portNumber = atoi(argv[3]);
+  
   // Create a socket
   socketFD = socket(AF_INET, SOCK_STREAM, 0); 
   if (socketFD < 0){
@@ -105,7 +106,7 @@ int main(int argc, char *argv[]) {
   }
 
    // Set up the server address struct
-  setupAddressStruct(&serverAddress, atoi(argv[2]), argv[1]);
+  setupAddressStruct(&serverAddress, portNumber, "localhost");
 
   // Connect to server
   if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
