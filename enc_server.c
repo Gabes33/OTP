@@ -94,11 +94,12 @@ int main(int argc, char *argv[]){
     error("ERROR on binding");
   }
 
+  while (1) {
+
   // Start listening for connetions. Allow up to 5 connections to queue up
   listen(listenSocket, 5); 
   
   // Accept a connection, blocking if one is not available until one connects
-  while(1){
 
     // Accept the connection request which creates a connection socket
     connectionSocket = accept(listenSocket, 
