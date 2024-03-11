@@ -144,9 +144,8 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirm size") != 0) {
+    if (strcmp(buffer, "confirm size") == 0) {
       fprintf(stderr, "There was an error confirming the size with the server");
-    }
     memset(buffer, '\0', sizeof(buffer));
 
     //We send the message file contents to the server and wait to confirm the server recieved
@@ -155,9 +154,9 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirm message") != 0) {
+    /*if (strcmp(buffer, "confirm message") != 0) {
       fprintf(stderr, "There was an error confirming the server received the message");
-    }
+    }*/
     memset(buffer, '\0', sizeof(buffer));
     
     // We send the key file contents to the server and wait to confirm the server recieved the
@@ -166,9 +165,9 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirm key") != 0) {
+    /*if (strcmp(buffer, "confirm key") != 0) {
       fprintf(stderr, "There was an error confirming the server recieved the key");
-    }
+    }*/
     memset(buffer, '\0', sizeof(buffer));
 
     //Receive the encrypted message and redirect it to stdout
@@ -176,9 +175,7 @@ int main(int argc, char *argv[]) {
     printf("%s", encMsg);
   }
 
-
-
-     
+}
     /*
 
     // Get input from the user, trunc to buffer - 1 chars, leaving \0
