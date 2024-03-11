@@ -136,19 +136,19 @@ int main(int argc, char *argv[]){
           fprintf(stderr,"Error retrieving the file size");
         }
 
-        charsSent = send(connectionSocket, "confirm size", 12, 0);
+        charsSent = send(connectionSocket, "confirmSize", 11, 0);
 
         rcvMsgInput(connectionSocket, fileSize);
-       /* if (sizeof(msgBuff) < fileSize) {
+       if (sizeof(msgBuff) < fileSize) {
           fprintf(stderr, "Could not get messge input");
-        }*/
-        //charsSent = send(connectionSocket, "confirm message", 15, 0);
+        }
+        charsSent = send(connectionSocket, "confirmMessage", 14, 0);
 
         rcvKeyInput(connectionSocket, fileSize);
-       /* if (sizeof(keyBuff) < fileSize) {
+       if (sizeof(keyBuff) < fileSize) {
           fprintf(stderr, "Could not get key input.");
-        }*/
-        //charsSent = send(connectionSocket, "confirm key", 11, 0);
+        }
+        charsSent = send(connectionSocket, "confirmKey", 10, 0);
 
         encMsg(msgBuff, keyBuff, fileSize);
 
