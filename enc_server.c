@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
   int connectionSocket;
 
   struct sockaddr_in serverAddress, clientAddress;
-  socklen_t sizeOfClientInfo = sizeof(clientAddress);
+  socklen_t sizeOfClientInfo;
   pid_t pid = -5;
 
   // Check usage & args
@@ -77,7 +77,6 @@ int main(int argc, char *argv[]){
     fprintf(stderr,"USAGE: %s port\n", argv[0]); 
     exit(1);
   } 
-  
   // Create the socket that will listen for connections
   int listenSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (listenSocket < 0) {
@@ -100,6 +99,8 @@ int main(int argc, char *argv[]){
   listen(listenSocket, 5); 
   
   // Accept a connection, blocking if one is not available until one connects
+  // Get the size of the address for the current client that will connect
+    sizeOfClientInfo = sizeof(clientAddress);
 
     // Accept the connection request which creates a connection socket
     connectionSocket = accept(listenSocket, 
