@@ -67,7 +67,7 @@ void setupAddressStruct(struct sockaddr_in* address,
 
 
   // Get the DNS entry for this host name
-  struct hostent* hostInfo = gethostbyname(hostname); 
+  struct hostent* hostInfo = gethostbyname("localhost"); 
   if (hostInfo == NULL) { 
     fprintf(stderr, "CLIENT: ERROR, no such host\n"); 
     exit(0); 
