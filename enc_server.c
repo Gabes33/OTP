@@ -130,23 +130,23 @@ int main(int argc, char *argv[]){
 
         fileSize = rcvSize(connectionSocket);
         if (fileSize == 0) {
-          error("File size is zero");
+          fprintf(stderr, "File size is zero.");
         }
         else if (fileSize < 0) {
-          error("Error retreiving file size");
+          fprintf(stderr,"Error retrieving the file size");
         }
 
         charsSent = send(connectionSocket, "confirm size", 12, 0);
 
         rcvMsgInput(connectionSocket, fileSize);
         if (sizeof(msgBuff) < fileSize) {
-          error("Could not get message input");
+          fprintf(stderr, "Could not get messge input");
         }
         charsSent = send(connectionSocket, "confirm message", 15, 0);
 
         rcvKeyInput(connectionSocket, fileSize);
         if (sizeof(keyBuff) < fileSize) {
-          error("Could not get key input");
+          fprintf(stderr, "Could not get key input.");
         }
         charsSent = send(connectionSocket, "confirm key", 11, 0);
 
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]){
         charsSent = 0;
         charsRead = 0;
 
-        // The message buffer is sent to the client until charsSent is equal
+        // The encoded message buffer is sent to the client until charsSent is equal
         // to the fileSize variable. The length of the message buffer is kept track of
         // through each iteration. Once all bytes are sent, the child process exits
 
