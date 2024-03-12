@@ -145,9 +145,13 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirmSize") == 0) {
-      //fprintf(stderr, "There was an error confirming the size with the server\n");
-    
+    if (strcmp(buffer, "confirmSize") != 0) {
+      fprintf(stderr, "There was an error confirming the size with the server\n");
+      for (int i = 0; i < sizeof(buffer); i++) {
+        printf("%c", buffer[i]);
+       }
+      printf("\n");
+    }
     memset(buffer, '\0', sizeof(buffer));
 
     //We send the message file contents to the server and wait to confirm the server recieved
@@ -156,9 +160,13 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirmMessage") == 0) {
-     // fprintf(stderr, "There was an error confirming the server received the message\n");
-  
+    if (strcmp(buffer, "confirmMessage") != 0) {
+      fprintf(stderr, "There was an error confirming the server received the message\n");
+      for (int i = 0; i < sizeof(buffer); i++) {
+        printf("%c", buffer[i]);
+      }
+      printf("\n");
+    }
     memset(buffer, '\0', sizeof(buffer));
     
     // We send the key file contents to the server and wait to confirm the server recieved the
@@ -167,17 +175,18 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirmKey") == 0) {
-      //fprintf(stderr, "There was an error confirming the server recieved the key\n");
-    
+    if (strcmp(buffer, "confirmKey") != 0) {
+      fprintf(stderr, "There was an error confirming the server recieved the key\n");
+      for (int i = 0; i < sizeof(buffer); i++) {
+        printf("%c", buffer[i]);
+      }
+      printf("\n");
+    }
     memset(buffer, '\0', sizeof(buffer));
 
     //Receive the encrypted message and redirect it to stdout
     rcvEncryptMsg(socketFD, msgLength);
     printf("%s", encMsg);
-  }
-    }
-    }
   }
 
     /*
