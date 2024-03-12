@@ -147,10 +147,6 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(buffer, "confirmSize") != 0) {
       fprintf(stderr, "There was an error confirming the size with the server\n");
-      for (int i = 0; i < sizeof(buffer); i++) {
-        printf("%c", buffer[i]);
-       }
-      printf("\n");
     }
     memset(buffer, '\0', sizeof(buffer));
 
@@ -162,10 +158,6 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(buffer, "confirmMessage") != 0) {
       fprintf(stderr, "There was an error confirming the server received the message\n");
-      for (int i = 0; i < sizeof(buffer); i++) {
-        printf("%c", buffer[i]);
-      }
-      printf("\n");
     }
     memset(buffer, '\0', sizeof(buffer));
     
@@ -177,10 +169,6 @@ int main(int argc, char *argv[]) {
     }
     if (strcmp(buffer, "confirmKey") != 0) {
       fprintf(stderr, "There was an error confirming the server recieved the key\n");
-      for (int i = 0; i < sizeof(buffer); i++) {
-        printf("%c", buffer[i]);
-      }
-      printf("\n");
     }
     memset(buffer, '\0', sizeof(buffer));
 
