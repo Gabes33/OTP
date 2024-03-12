@@ -145,8 +145,7 @@ int main(int argc, char *argv[]) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
     if (strcmp(buffer, "confirmSize") != 0) {
-      buffer[sizeof(buffer)- 1] = 0;
-      fprintf(stderr, "Buffer: %s There was an error confirming the size with the server\n", buffer);
+      fprintf(stderr, "There was an error confirming the size with the server\n");
     }
     memset(buffer, '\0', sizeof(buffer));
 
@@ -157,7 +156,7 @@ int main(int argc, char *argv[]) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
     if (strcmp(buffer, "confirmMessage") != 0) {
-      fprintf(stderr, "There was an error confirming the server received the message");
+      fprintf(stderr, "There was an error confirming the server received the message\n");
     }
     memset(buffer, '\0', sizeof(buffer));
     
@@ -168,7 +167,7 @@ int main(int argc, char *argv[]) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
     if (strcmp(buffer, "confirmKey") != 0) {
-      fprintf(stderr, "There was an error confirming the server recieved the key");
+      fprintf(stderr, "There was an error confirming the server recieved the key\n");
     }
     memset(buffer, '\0', sizeof(buffer));
 
