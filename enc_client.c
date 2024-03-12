@@ -139,14 +139,15 @@ int main(int argc, char *argv[]) {
     sprintf(buffer, "%d", msgLength);
     charsWritten = send(socketFD, buffer, sizeof(buffer), 0);
     memset(buffer, '\0', sizeof(buffer));
-
+  
+    charsRead = 0;
     //We wait to recieve the correct confirmation message that the server recieved the size
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirmSize") != 0) {
-      fprintf(stderr, "There was an error confirming the size with the server\n");
-    }
+    if (strcmp(buffer, "confirmSize") == 0) {
+      //fprintf(stderr, "There was an error confirming the size with the server\n");
+    
     memset(buffer, '\0', sizeof(buffer));
 
     //We send the message file contents to the server and wait to confirm the server recieved
@@ -155,9 +156,9 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirmMessage") != 0) {
-      fprintf(stderr, "There was an error confirming the server received the message\n");
-    }
+    if (strcmp(buffer, "confirmMessage") == 0) {
+     // fprintf(stderr, "There was an error confirming the server received the message\n");
+  
     memset(buffer, '\0', sizeof(buffer));
     
     // We send the key file contents to the server and wait to confirm the server recieved the
@@ -166,14 +167,17 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    if (strcmp(buffer, "confirmKey") != 0) {
-      fprintf(stderr, "There was an error confirming the server recieved the key\n");
-    }
+    if (strcmp(buffer, "confirmKey") == 0) {
+      //fprintf(stderr, "There was an error confirming the server recieved the key\n");
+    
     memset(buffer, '\0', sizeof(buffer));
 
     //Receive the encrypted message and redirect it to stdout
     rcvEncryptMsg(socketFD, msgLength);
     printf("%s", encMsg);
+  }
+    }
+    }
   }
 
     /*
@@ -260,13 +264,13 @@ been generated. We open this file and check the length.
 RETURNS: The length size is returned as an int.
 **********************************************************************/
 int checkLength(char strFile[]) {
-  int file = open(strFile, O_RDONLY);
-  if (file < 0) {
+  int fe = open(strFile, O_RDONLY);
+  if (fe < 0) {
     error("Could not successfully open file");
   }
   // We look for the offset of the file and return the number of bytes to this offset
-  int fileLength = lseek(file, 0, SEEK_END);
-  close(file);
+  int fileLength = lseek(fe, 0, SEEK_END);
+  close(fe);
   return fileLength;
 
 }

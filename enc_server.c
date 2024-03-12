@@ -17,10 +17,10 @@ Date: 3-6-24
 /*********************************************************
 GLOBAL VARIABLES
 **********************************************************/
-char buffer[256];
+char buffer[500];
 int fileSize, charsRead, charsSent;
-char msgBuff[10000];
-char keyBuff[10000];
+char msgBuff[1001];
+char keyBuff[1001];
 
 // Error function used for reporting issues
 void error(const char *msg) {
