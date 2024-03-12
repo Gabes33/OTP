@@ -144,19 +144,21 @@ int main(int argc, char *argv[]){
           fprintf(stderr, "Could not get messge input");
         }
         charsSent = 0;
+        /*
         char conf_msg[] = "confirmMessage";
         int conf_msg_length = strlen(conf_msg);
         charsSent = send(connectionSocket, conf_msg, conf_msg_length, 0);
-
+        */
         rcvKeyInput(connectionSocket, fileSize);
-       if (sizeof(keyBuff) < fileSize) {
+        if (sizeof(keyBuff) < fileSize) {
           fprintf(stderr, "Could not get key input.");
        } 
+        /*
         charsSent = 0;
         char conf_key[] = "confirmKey";
         int size_conf_key = strlen(conf_key);
         charsSent = send(connectionSocket, conf_key, size_conf_key, 0);
-
+        */
         encMsg(msgBuff, keyBuff, fileSize);
 
         // Get the message from the client and display it
