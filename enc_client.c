@@ -308,6 +308,8 @@ void sendFile(int socket, char strFile[], int length){
  int strF = open(strFile, O_RDONLY);
  
  int totalBytes = 0;
+ memset(buffer, '\0', sizeof(buffer));
+
  while (totalBytes < length) {
    memset(buffer, '\0', sizeof(buffer));
 
