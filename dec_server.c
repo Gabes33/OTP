@@ -320,7 +320,7 @@ As expected, the message and key need to be the same size
 
 RETURNS: Nothing, but the message buffer now contains the decoded message
 ******************************************************************************/
-void encMsg(char message[], char key[], int size) {
+void decMsg(char message[], char key[], int size) {
 
   // We start at the first capital letter A, which is 0 for our numerical value
   int startLetter = 'A', msgChar, keyChar;
