@@ -145,7 +145,8 @@ int main(int argc, char *argv[]) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
     if (strcmp(buffer, "confirmSize") != 0) {
-      fprintf(stderr, "Buffer: %s,There was an error confirming the size with the server", buffer);
+      buffer[sizeof(buffer)- 1] = 0;
+      fprintf(stderr, "Buffer: %s There was an error confirming the size with the server\n", buffer);
     }
     memset(buffer, '\0', sizeof(buffer));
 
