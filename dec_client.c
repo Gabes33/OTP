@@ -196,7 +196,7 @@ correct one
 
 
 int confirmServer(int socket) {
-    char validation[] = "enc_val";
+    char validation[] = "dec_val";
     int val_length = strlen(validation);
     charsWritten = send(socket, validation, val_length, 0);
     memset(buffer, '\0', sizeof(buffer));
@@ -209,7 +209,7 @@ int confirmServer(int socket) {
       error("Client unable to read message on socket");
       return 0;
     }
-    if (strcmp(buffer, "enc_val") != 0) {
+    if (strcmp(buffer, "dec_val") != 0) {
       fprintf(stderr, "Invalid client on socket connection");
       return 2;
     }
