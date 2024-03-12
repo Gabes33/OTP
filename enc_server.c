@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_server
-Date: 3-6-24
+Date: 3-12-24
 */
 
 
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]){
         charsSent = 0;
         charsRead = 0;
 
-        // The encoded message buffer is sent to the client until charsSent is equal
+        // The encrypted message buffer is sent to the client until charsSent is equal
         // to the fileSize variable. The length of the message buffer is kept track of
         // through each iteration. Once all bytes are sent, the child process exits
 
@@ -168,22 +168,6 @@ int main(int argc, char *argv[]){
           charsSent += send(connectionSocket, msgBuff, msgLength, 0);
         }
         exit(0);
-      
-        /************************************************************
-        // Read the client's message from the socket
-        charsRead = recv(connectionSocket, buffer, 255, 0); 
-        if (charsRead < 0){
-         error("ERROR reading from socket");
-         }
-        printf("SERVER: I received this from the client: \"%s\"\n", buffer);
-
-       // Send a Success message back to the client
-       charsRead = send(connectionSocket, 
-                    "I am the server, and I got your message", 39, 0); 
-       if (charsRead < 0){
-        error("ERROR writing to socket");
-       } 
-      *****************************************************************/
       }
       else {
         error("The connection with the client socket could not be confirmed");
@@ -333,7 +317,7 @@ sent
 int size - the size in bytes of the message and key sent by the client socket.
 As expected, the message and key need to be the same size
 
-RETURNS: Nothing, but the message buffer now contains the encoded message
+RETURNS: Nothing, but the message buffer now contains the encrypted message
 ******************************************************************************/
 void encMsg(char message[], char key[], int size) {
 
@@ -379,7 +363,7 @@ FUNCTION: int convertInt
 
 ARGUMENTS:
 int curInt - The current character in that has been converted to an integer and needs
-to be the correct value for encodeing the message
+to be the correct value for encrypting the message
 
 RETURNS: The converted character to intgeger value is returned as the correct integer
 value for caluclation purposes
