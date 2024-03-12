@@ -156,11 +156,7 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    /*
-    if (strcmp(buffer, "confirmMessage") != 0) {
-      fprintf(stderr, "There was an error confirming the server received the message\n");
-    }
-    */
+    
     memset(buffer, '\0', sizeof(buffer));
     
     // We send the key file contents to the server and wait to confirm the server recieved the
@@ -169,46 +165,13 @@ int main(int argc, char *argv[]) {
     while (charsRead == 0) {
       charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
     }
-    /*
-    if (strcmp(buffer, "confirmKey") != 0) {
-      fprintf(stderr, "There was an error confirming the server recieved the key\n");
-    }
-    */
+    
     memset(buffer, '\0', sizeof(buffer));
 
     //Receive the encrypted message and redirect it to stdout
     rcvEncryptMsg(socketFD, msgLength);
     printf("%s", encMsg);
   }
-
-    /*
-
-    // Get input from the user, trunc to buffer - 1 chars, leaving \0
-    //fgets(buffer, sizeof(buffer) - 1, stdin);
-    // Remove the trailing \n that fgets adds
-    buffer[strcspn(buffer, "\n")] = '\0'; 
-
-    // Send message to server
-    // Write to the server
-    charsWritten = send(socketFD, buffer, strlen(buffer), 0); 
-    if (charsWritten < 0){
-      error("CLIENT: ERROR writing to socket");
-    }
-    if (charsWritten < strlen(buffer)){
-      printf("CLIENT: WARNING: Not all data written to socket!\n");
-    }
-
-    // Get return message from server
-    // Clear out the buffer again for reuse
-    memset(buffer, '\0', sizeof(buffer));
-    // Read data from the socket, leaving \0 at end
-    charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0); 
-    if (charsRead < 0){
-      error("CLIENT: ERROR reading from socket");
-    }
-    printf("CLIENT: I received this from the server: \"%s\"\n", buffer);
-   
-    */ 
 
 
   // Close the socket
