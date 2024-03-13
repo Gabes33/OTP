@@ -167,7 +167,7 @@ int main(int argc, char *argv[]){
           int msgLength = strlen(msgBuff);
           charsSent += send(connectionSocket, msgBuff, msgLength, 0);
         }
-        exit(0);
+        //exit(0);
       }
       else {
         error("The connection with the client socket could not be confirmed");

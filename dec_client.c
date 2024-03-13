@@ -116,6 +116,7 @@ int main(int argc, char *argv[]) {
   //Confirm connection with server is correct
   int checkConnection = confirmServer(socketFD);
   if (checkConnection == 2) {
+    fprintf(stderr, "Client connection to Server refused or invalid");
     exit(2);
   }
   else if (checkConnection == 1) {
