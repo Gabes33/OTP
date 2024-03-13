@@ -269,7 +269,7 @@ int size - the size expected of the message being sent over
 
 RETURNS: Nothing, but the message buffer is filled with the incoming message
 *****************************************************************************/
-void rcvMsgInput(int socket, char msgFile[], int size) {
+void rcvInput(int socket, char msgFile[], int size) {
   int bytes = 0;
   int byteTotal = 0;
   char inputBuffer[3000];
