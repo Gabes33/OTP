@@ -50,7 +50,7 @@ FUNCTION DECLARATIONS
 **********************************************************/
 int clientConnectionConfirm(int socket);
 int rcvSize(int socket);
-void rcvMsgInput(int socket, char msgFile[], int size);
+void rcvInput(int socket, char msgFile[], int size);
 void encMsg(char message[], char key[], int size);
 int convertInt(int curInt);
 
@@ -139,14 +139,14 @@ int main(int argc, char *argv[]){
         charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
         
         memset(msgBuff, '\0', sizeof(msgBuff));
-        rcvMsgInput(connectionSocket, msgBuff, fileSize);
+        rcvInput(connectionSocket, msgBuff, fileSize);
         if (sizeof(msgBuff) < fileSize) {
           fprintf(stderr, "Could not get messge input");
         }
         charsSent = 0;
         
         memset(keyBuff, '\0', sizeof(keyBuff));
-        rcvMsgInput(connectionSocket, keyBuff, fileSize);
+        rcvInput(connectionSocket, keyBuff, fileSize);
         if (sizeof(keyBuff) < fileSize) {
           fprintf(stderr, "Could not get key input.");
        } 
