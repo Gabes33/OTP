@@ -241,16 +241,14 @@ buffer. We can assign the result of the rcv() function to a variable and convert
 that variable to an integer to get the size of the file sent through the socket
 *******************************************************************************/
 int rcvSize(int socket) {
-  char sizeInputBuffer[3000];
   //Clear the buffer
-  memset(sizeInputBuffer, '\0', sizeof(sizeInputBuffer));
+  memset(buffer, '\0', sizeof(buffer));
   while (charsRead == 0) {
     //We get the size of the buffer - 1 to not account for newline character
-    charsRead = recv(socket, sizeInputBuffer, sizeof(sizeInputBuffer) - 1, 0);
+    charsRead = recv(socket, buffer, sizeof(buffer) - 1, 0);
     }
-    fileSize = atoi(sizeInputBuffer);
+    fileSize = atoi(buffer);
     memset(buffer, '\0', sizeof(buffer));
-    memset(sizeInputBuffer, '\0', sizeof(sizeInputBuffer));
     return fileSize;
 
 }
@@ -269,16 +267,15 @@ RETURNS: Nothing, but the message buffer is filled with the incoming message
 void rcvMsgInput(int socket, int size) {
   int bytes = 0;
   int byteTotal = 0;
-  char inputBuffer[3000];
 
   memset(msgBuff, '\0', sizeof(msgBuff));
   while (byteTotal < size) {
     // The buffer is cleared each time in order to get another section of bytes from the client socket
-    memset(inputBuffer, '\0', sizeof(inputBuffer));
-    bytes = recv(socket, inputBuffer, sizeof(inputBuffer) - 1, 0);
+    memset(buffer, '\0', sizeof(buffer));
+    bytes = recv(socket, buffer, sizeof(buffer) - 1, 0);
     byteTotal += bytes;
     // We add the section of bytes to the msgBuff
-    strcat(msgBuff, inputBuffer);
+    strcat(msgBuff, buffer);
   }
   return;
 }
@@ -298,12 +295,11 @@ RETURNS: Nothing, but the key buffer is filled with the incoming key message
 void rcvKeyInput(int socket, int size) {
   int bytes = 0;
   int byteTotal = 0;
-  char inputBuffer[3000];
 
   memset(keyBuff, '\0', sizeof(keyBuff));
   while (byteTotal < size) {
-    memset(inputBuffer, '\0', sizeof(inputBuffer));
-    bytes = recv(socket, inputBuffer, sizeof(inputBuffer) - 1, 0);
+    memset(buffer, '\0', sizeof(buffer));
+    bytes = recv(socket, buffer, sizeof(buffer) - 1, 0);
     byteTotal += bytes;
     strcat(keyBuff, buffer);
   }
