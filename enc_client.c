@@ -51,33 +51,6 @@ void error(const char *msg) {
 
 
 
-// Set up the address struct
-void setupAddressStruct(struct sockaddr_in* address, 
-                        int portNumber, 
-                        char* hostname){
- 
-  // Clear out the address struct
-  memset((char*) address, '\0', sizeof(*address)); 
-
-  // The address should be network capable
-  address->sin_family = AF_INET;
-  // Store the port number
-  address->sin_port = htons(portNumber);
-
-
-
-  // Get the DNS entry for this host name
-  struct hostent* hostInfo = gethostbyname("localhost"); 
-  if (hostInfo == NULL) { 
-    fprintf(stderr, "CLIENT: ERROR, no such host\n"); 
-    exit(0); 
-  }
-  // Copy the first IP address from the DNS entry to sin_addr.s_addr
-  memcpy((char*) &address->sin_addr.s_addr, 
-        hostInfo->h_addr_list[0],
-        hostInfo->h_length);
-}
-
 /*******************************************************************
 FUNCTION: int main
 
@@ -89,28 +62,45 @@ char *argv[]
 
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
-  struct sockaddr_in serverAddress;
+  struct sockaddr_in serverAddressInfo;
+  struct hostent* serverHostInfo;
 
   // Check usage & args
   if (argc < 4) { 
     fprintf(stderr,"USAGE: %s hostname port\n", argv[0]); 
     exit(1); 
   } 
+  
+  // Clear out the address struct
+  memset((char*) &serverAddressInfo, '\0', sizeof(serverAddressInfo));
 
+  // Obtain the port number from argv and convert to integer
   portNumber = atoi(argv[3]);
   
+  //The server address should be network capbable
+  serverAddressInfo.sin_family = AF_INET;
+
+  //Store the port number
+  serverAddressInfo.sin_port = htons(portNumber);
+
+  //Get the DNS entry for this host name
+  serverHostInfo = gethostbyname("localhost");
+  if (serverHostInfo == NULL) {
+    fprintf(stderr, "CLIENT: ERROR, no such host\n");
+    exit(0);
+  }
+
+  // Copy the first IP addrress from the DNS entry to sin_addr.s_addr
+  memcpy((char *) &serverAddressInfo.sin_addr.s_addr, (char *)serverHostInfo->h_addr_list[0], serverHostInfo->h_length);
   // Create a socket
   socketFD = socket(AF_INET, SOCK_STREAM, 0); 
   if (socketFD < 0){
     error("CLIENT: ERROR opening socket");
   }
 
-   // Set up the server address struct
-  setupAddressStruct(&serverAddress, portNumber, "localhost");
-
   // Connect to server
-  if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
-    error("CLIENT: ERROR connecting");
+  if (connect(socketFD, (struct sockaddr*)&serverAddressInfo, sizeof(serverAddressInfo)) < 0){
+    error("CLIENT: ERROR connecting to Server");
   }
 
   //Confirm connection with server is correct
