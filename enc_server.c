@@ -50,8 +50,7 @@ FUNCTION DECLARATIONS
 **********************************************************/
 int clientConnectionConfirm(int socket);
 int rcvSize(int socket);
-void rcvMsgInput(int socket, int size);
-void rcvKeyInput(int socket, int size);
+void rcvMsgInput(int socket, char msgFile[], int size);
 void encMsg(char message[], char key[], int size);
 int convertInt(int curInt);
 
@@ -138,14 +137,16 @@ int main(int argc, char *argv[]){
         char size_conf[] = "confirmSize";
         int size_conf_length = strlen(size_conf);
         charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
-
-        rcvMsgInput(connectionSocket, fileSize);
+        
+        memset(msgBuff, '\0', sizeof(msgBuff));
+        rcvMsgInput(connectionSocket, msgBuff, fileSize);
         if (sizeof(msgBuff) < fileSize) {
           fprintf(stderr, "Could not get messge input");
         }
         charsSent = 0;
-   
-        rcvKeyInput(connectionSocket, fileSize);
+        
+        memset(keyBuff, '\0', sizeof(keyBuff));
+        rcvMsgInput(connectionSocket, keyBuff, fileSize);
         if (sizeof(keyBuff) < fileSize) {
           fprintf(stderr, "Could not get key input.");
        } 
@@ -254,28 +255,29 @@ int rcvSize(int socket) {
 }
 
 /****************************************************************************
-FUNCTION: void rcvMsgInput
+FUNCTION: void rcvInput
 
 ARGUMENTS:
 int socket - client socket file descriptor that can send a file over of the
 expected size
 
+char msgFile - buffer that recieves the incoming bytes
+
 int size - the size expected of the message being sent over
 
 RETURNS: Nothing, but the message buffer is filled with the incoming message
 *****************************************************************************/
-void rcvMsgInput(int socket, int size) {
+void rcvMsgInput(int socket, char msgFile[], int size) {
   int bytes = 0;
   int byteTotal = 0;
 
-  memset(msgBuff, '\0', sizeof(msgBuff));
   while (byteTotal < size) {
     // The buffer is cleared each time in order to get another section of bytes from the client socket
     memset(buffer, '\0', sizeof(buffer));
     bytes = recv(socket, buffer, sizeof(buffer) - 1, 0);
     byteTotal += bytes;
     // We add the section of bytes to the msgBuff
-    strcat(msgBuff, buffer);
+    strcat(msgFile, buffer);
   }
   return;
 }
