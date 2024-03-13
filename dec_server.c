@@ -171,8 +171,11 @@ int main(int argc, char *argv[]){
         exit(0);
       }
       else {
-        error("The connection with the client socket could not be confirmed");
-          break;
+        char invalid[] = "Invalid connection";
+        charsRead = send(connectionSocket, invalid, sizeof(invalid), 0);
+        fprintf(stderr, "The connection to the client socket is invalid\n");
+        exit(1);
+        break;
       }
       exit(0);
     
