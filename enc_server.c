@@ -186,7 +186,7 @@ int main(int argc, char *argv[]){
     // The parent process will continue on with other client sockets instead of
     // waiting on the current client socket child process
     int pidExitStatus;
-    waitpid(pid, &pidExitStatus, WNOHANG);
+    pid_t nextPID = waitpid(pid, &pidExitStatus, WNOHANG);
     close(connectionSocket);
    }
   
