@@ -179,8 +179,6 @@ int main(int argc, char *argv[]){
        break;
        }
      exit(0);
-
-    }
     
     // The parent process will continue on with other client sockets instead of
     // waiting on the current client socket child process
@@ -188,7 +186,7 @@ int main(int argc, char *argv[]){
     waitpid(pid, &pidExitStatus, WNOHANG);
     close(connectionSocket);
    }
-  
+} 
   // Close the listening socket
   close(listenSocket); 
   return 0;
