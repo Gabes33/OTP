@@ -92,11 +92,11 @@ int main(int argc, char *argv[]){
           sizeof(serverAddress)) < 0){
     error("ERROR on binding");
   }
+  // Start listening for connections. Allow up to 5 connections to queue up
+  listen(listenSocket, 5);
 
   while (1) {
 
-     // Start listening for connetions. Allow up to 5 connections to queue up
-     listen(listenSocket, 5); 
      
     // Accept a connection, blocking if one is not available until one connects
     // Get the size of the address for the current client that will connect
@@ -175,9 +175,9 @@ int main(int argc, char *argv[]){
        charsRead = send(connectionSocket, invalid, sizeof(invalid), 0);
        fprintf(stderr, "The connection to the clinet is invalid\n");
        exit(1);
-       break;
+       //break;
        }
-     //exit(0);
+     exit(0);
 
     }
     
