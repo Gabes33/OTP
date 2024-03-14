@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
   int connectionSocket;
 
   struct sockaddr_in serverAddress, clientAddress;
-  socklen_t sizeOfClientInfo;
+  socklen_t sizeOfClientInfo = sizeof(clientAddress);
   pid_t pid = -5;
 
   // Check usage & args
@@ -93,106 +93,105 @@ int main(int argc, char *argv[]){
     error("ERROR on binding");
   }
   // Start listening for connections. Allow up to 5 connections to queue up
-  //listen(listenSocket, 5);
+  listen(listenSocket, 5);
 
   while (1) {
 
-               // Start listening for connections. Allow up to 5 connections to queue up
-               listen(listenSocket, 5);
+    // Start listening for connections. Allow up to 5 connections to queue up
+    //listen(listenSocket, 5);
      
-              // Accept a connection, blocking if one is not available until one connects
-              // Get the size of the address for the current client that will connect
-              sizeOfClientInfo = sizeof(clientAddress);
+    // Accept a connection, blocking if one is not available until one connects
+    // Get the size of the address for the current client that will connect
 
-              // Accept the connection request which creates a connection socket
-              connectionSocket = accept(listenSocket, 
-                  (struct sockaddr *)&clientAddress, 
-                  &sizeOfClientInfo); 
-              if (connectionSocket < 0){
-              error("ERROR on accept");
-              }
+    // Accept the connection request which creates a connection socket
+    connectionSocket = accept(listenSocket, 
+                (struct sockaddr *)&clientAddress, 
+                &sizeOfClientInfo); 
+    if (connectionSocket < 0){
+      error("ERROR on accept");
+    }
+    else {
+      printf("Accept to client successful");
+    }
 
-              //printf("SERVER: Connected to client running at host %d port %d\n", 
-                          //ntohs(clientAddress.sin_addr.s_addr),
-                          //ntohs(clientAddress.sin_port));
+    printf("SERVER: Connected to client running at host %d port %d\n", 
+                          ntohs(clientAddress.sin_addr.s_addr),
+                          ntohs(clientAddress.sin_port));
 
-              pid = fork();
-              switch (pid) {
-                case -1: {
-                                error("Error in establishing fork.\n");
-                                exit(1);
-                         }
-                case 0: {
-                            if (clientConnectionConfirm(connectionSocket)) {
-                                                                                char return_conf[] = "enc_val";
-                                                                                int conf_length = strlen(return_conf);
+   pid = fork();
+   if (pid == -1) {
+   error("Error in establishing fork.\n");
+   exit(1);
+   }
+   if (pid == 0) {
+      if (clientConnectionConfirm(connectionSocket)) {
+          char return_conf[] = "enc_val";
+          int conf_length = strlen(return_conf);
         
-                                                                                //Send the confirmation that the sever got the validation string
-                                                                                charsSent = send(connectionSocket, return_conf, conf_length, 0);
+          //Send the confirmation that the sever got the validation string
+          charsSent = send(connectionSocket, return_conf, conf_length, 0);
 
 
-                                                                                fileSize = rcvSize(connectionSocket);
-                                                                                if (fileSize == 0) {
-                                                                                fprintf(stderr, "File size is zero.");
-                                                                                }
-                                                                                if (fileSize < 0) {
-                                                                                fprintf(stderr,"Error retrieving the file size");
-                                                                                }
-                                                                                char size_conf[] = "confirmSize";
-                                                                                int size_conf_length = strlen(size_conf);
-                                                                                charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
+          fileSize = rcvSize(connectionSocket);
+          if (fileSize == 0) {
+            fprintf(stderr, "File size is zero.");
+            }
+          else if (fileSize < 0) {
+          fprintf(stderr,"Error retrieving the file size");
+            }
+          char size_conf[] = "confirmSize";
+          int size_conf_length = strlen(size_conf);
+          charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
 
-                                                                                rcvMsgInput(connectionSocket, fileSize);
-                                                                                if (sizeof(msgBuff) < fileSize) {
-                                                                                fprintf(stderr, "Could not get messge input");
-                                                                                }
-                                                                                charsSent = 0;
+          rcvMsgInput(connectionSocket, fileSize);
+          if (sizeof(msgBuff) < fileSize) {
+            fprintf(stderr, "Could not get messge input");
+          }
+          charsSent = 0;
    
-                                                                                rcvKeyInput(connectionSocket, fileSize);
-                                                                                if (sizeof(keyBuff) < fileSize) {
-                                                                                fprintf(stderr, "Could not get key input.");
-                                                                                } 
+          rcvKeyInput(connectionSocket, fileSize);
+          if (sizeof(keyBuff) < fileSize) {
+            fprintf(stderr, "Could not get key input.");
+          } 
         
-                                                                                encMsg(msgBuff, keyBuff, fileSize);
+          encMsg(msgBuff, keyBuff, fileSize);
 
-                                                                                // Get the message from the client and display it
-                                                                                memset(buffer, '\0', sizeof(buffer));
+          // Get the message from the client and display it
+          memset(buffer, '\0', sizeof(buffer));
         
-                                                                                //We reset charsSent and charsRead to 0
-                                                                                charsSent = 0;
-                                                                                charsRead = 0;
+          //We reset charsSent and charsRead to 0
+          charsSent = 0;
+          charsRead = 0;
 
-                                                                                // The encrypted message buffer is sent to the client until charsSent is equal
-                                                                                // to the fileSize variable. The length of the message buffer is kept track of
-                                                                               // through each iteration. Once all bytes are sent, the child process exits
+          // The encrypted message buffer is sent to the client until charsSent is equal
+          // to the fileSize variable. The length of the message buffer is kept track of
+          // through each iteration. Once all bytes are sent, the child process exits
 
-                                                                              while (charsSent < fileSize) {
-                                                                                int msgLength = strlen(msgBuff);
-                                                                                charsSent += send(connectionSocket, msgBuff, msgLength, 0);
-                                                                                }
-                                                                                //close(connectionSocket);
-                                                                                exit(0);
-                                                                                //break;
+          while (charsSent < fileSize) {
+            int msgLength = strlen(msgBuff);
+            charsSent += send(connectionSocket, msgBuff, msgLength, 0);
+            }
+        exit(0);
+      }
 
-                                                                             }
-                                                                              //exit(0);
-                           else {
-                                  char invalid[] = "Invalid connection";
-                                  charsRead = send(connectionSocket, invalid, sizeof(invalid), 0);
-                                  fprintf(stderr, "The connection to the clinet is invalid\n");
-                                  exit(1);
-                                  //break;
-                                  }
-              }
-                        default: {
-                        // The parent process will continue on with other client sockets instead of
-                        // waiting on the current client socket child process
-                        int pidExitStatus;
-                        pid_t nextPID  = waitpid(pid, &pidExitStatus, WNOHANG);
-                                 }
-  }
-  close(connectionSocket);
-}
+      else {
+       char invalid[] = "Invalid connection";
+       charsRead = send(connectionSocket, invalid, sizeof(invalid), 0);
+       fprintf(stderr, "The connection to the clinet is invalid\n");
+       exit(1);
+       break;
+       }
+     exit(0);
+
+    }
+    
+    // The parent process will continue on with other client sockets instead of
+    // waiting on the current client socket child process
+    int pidExitStatus;
+    waitpid(pid, &pidExitStatus, WNOHANG);
+    close(connectionSocket);
+   }
+  
   // Close the listening socket
   close(listenSocket); 
   return 0;
@@ -215,7 +214,7 @@ correct one
 ************************************************************************/
 
 int clientConnectionConfirm(int socket) {
-  char incoming_buff[100];
+  char incoming_buff[1000];
   int char_rcv = 0;
 
   //Zero out entire buffer
@@ -223,7 +222,7 @@ int clientConnectionConfirm(int socket) {
   while (char_rcv == 0) {
     char_rcv = recv(socket, incoming_buff, sizeof(incoming_buff) - 1, 0);
     if ((strcmp(incoming_buff, "enc_val")) == 0) {
-
+      printf("Confirmation confirmed with Client");
       //string received back is equal to confirmation phrase, so return true
       return 1;
   }
