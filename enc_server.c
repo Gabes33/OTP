@@ -93,12 +93,12 @@ int main(int argc, char *argv[]){
     error("ERROR on binding");
   }
   // Start listening for connections. Allow up to 5 connections to queue up
-  listen(listenSocket, 5);
+  //listen(listenSocket, 5);
 
   while (1) {
 
                // Start listening for connections. Allow up to 5 connections to queue up
-               //listen(listenSocket, 5);
+               listen(listenSocket, 5);
      
               // Accept a connection, blocking if one is not available until one connects
               // Get the size of the address for the current client that will connect
@@ -117,12 +117,13 @@ int main(int argc, char *argv[]){
                           //ntohs(clientAddress.sin_port));
 
               pid = fork();
-              if (pid == -1) {
-              error("Error in establishing fork.\n");
-              exit(1);
-               }
-              if (pid == 0) {
-                              if (clientConnectionConfirm(connectionSocket)) {
+              switch (pid) {
+                case -1: {
+                                error("Error in establishing fork.\n");
+                                exit(1);
+                         }
+                case 0: {
+                            if (clientConnectionConfirm(connectionSocket)) {
                                                                                 char return_conf[] = "enc_val";
                                                                                 int conf_length = strlen(return_conf);
         
@@ -169,9 +170,12 @@ int main(int argc, char *argv[]){
                                                                                 int msgLength = strlen(msgBuff);
                                                                                 charsSent += send(connectionSocket, msgBuff, msgLength, 0);
                                                                                 }
+                                                                                //close(connectionSocket);
                                                                                 exit(0);
+                                                                                //break;
+
                                                                              }
-                          
+                                                                              //exit(0);
                            else {
                                   char invalid[] = "Invalid connection";
                                   charsRead = send(connectionSocket, invalid, sizeof(invalid), 0);
@@ -179,15 +183,16 @@ int main(int argc, char *argv[]){
                                   exit(1);
                                   //break;
                                   }
-
-     //exit(0);
-                          }  
-    // The parent process will continue on with other client sockets instead of
-    // waiting on the current client socket child process
-    int pidExitStatus;
-    waitpid(pid, &pidExitStatus, WNOHANG);
-    close(connectionSocket);
+              }
+                        default: {
+                        // The parent process will continue on with other client sockets instead of
+                        // waiting on the current client socket child process
+                        int pidExitStatus;
+                        pid_t nextPID  = waitpid(pid, &pidExitStatus, WNOHANG);
+                                 }
   }
+  close(connectionSocket);
+}
   // Close the listening socket
   close(listenSocket); 
   return 0;
