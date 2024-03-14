@@ -93,10 +93,12 @@ int main(int argc, char *argv[]){
     error("ERROR on binding");
   }
   // Start listening for connections. Allow up to 5 connections to queue up
-  listen(listenSocket, 5);
+  //listen(listenSocket, 5);
 
   while (1) {
 
+    // Start listening for connections. Allow up to 5 connections to queue up
+    listen(listenSocket, 5);
      
     // Accept a connection, blocking if one is not available until one connects
     // Get the size of the address for the current client that will connect
@@ -110,9 +112,9 @@ int main(int argc, char *argv[]){
       error("ERROR on accept");
     }
 
-    printf("SERVER: Connected to client running at host %d port %d\n", 
-                          ntohs(clientAddress.sin_addr.s_addr),
-                          ntohs(clientAddress.sin_port));
+    //printf("SERVER: Connected to client running at host %d port %d\n", 
+                          //ntohs(clientAddress.sin_addr.s_addr),
+                          //ntohs(clientAddress.sin_port));
 
    pid = fork();
    if (pid == -1) {
@@ -166,9 +168,9 @@ int main(int argc, char *argv[]){
           while (charsSent < fileSize) {
             int msgLength = strlen(msgBuff);
             charsSent += send(connectionSocket, msgBuff, msgLength, 0);
-          }
+            }
         exit(0);
-        }
+      }
 
       else {
        char invalid[] = "Invalid connection";
@@ -186,7 +188,7 @@ int main(int argc, char *argv[]){
     int pidExitStatus;
     waitpid(pid, &pidExitStatus, WNOHANG);
     close(connectionSocket);
-      }
+   }
   
   // Close the listening socket
   close(listenSocket); 
