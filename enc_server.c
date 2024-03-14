@@ -69,7 +69,7 @@ int main(int argc, char *argv[]){
   int connectionSocket;
 
   struct sockaddr_in serverAddress, clientAddress;
-  socklen_t sizeOfClientInfo = sizeof(clientAddress);
+  socklen_t sizeOfClientInfo;
   pid_t pid = -5;
 
   // Check usage & args
@@ -96,12 +96,12 @@ int main(int argc, char *argv[]){
   listen(listenSocket, 5);
 
   while (1) {
-
     // Start listening for connections. Allow up to 5 connections to queue up
     //listen(listenSocket, 5);
      
     // Accept a connection, blocking if one is not available until one connects
     // Get the size of the address for the current client that will connect
+    sizeOfClientInfo = sizeof(clientAddress);
 
     // Accept the connection request which creates a connection socket
     connectionSocket = accept(listenSocket, 
@@ -110,13 +110,10 @@ int main(int argc, char *argv[]){
     if (connectionSocket < 0){
       error("ERROR on accept");
     }
-    else {
-      printf("Accept to client successful");
-    }
 
-    printf("SERVER: Connected to client running at host %d port %d\n", 
-                          ntohs(clientAddress.sin_addr.s_addr),
-                          ntohs(clientAddress.sin_port));
+    //printf("SERVER: Connected to client running at host %d port %d\n", 
+                          //ntohs(clientAddress.sin_addr.s_addr),
+                          //ntohs(clientAddress.sin_port));
 
    pid = fork();
    if (pid == -1) {
@@ -214,7 +211,7 @@ correct one
 ************************************************************************/
 
 int clientConnectionConfirm(int socket) {
-  char incoming_buff[1000];
+  char incoming_buff[100];
   int char_rcv = 0;
 
   //Zero out entire buffer
@@ -222,7 +219,7 @@ int clientConnectionConfirm(int socket) {
   while (char_rcv == 0) {
     char_rcv = recv(socket, incoming_buff, sizeof(incoming_buff) - 1, 0);
     if ((strcmp(incoming_buff, "enc_val")) == 0) {
-      printf("Confirmation confirmed with Client");
+
       //string received back is equal to confirmation phrase, so return true
       return 1;
   }
