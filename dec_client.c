@@ -20,10 +20,10 @@ Date: 3-12-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-char buffer[256];
-char msgBuff[1000];
-char keyBuff[1000];
-char encMsg[1000];
+char buffer[8000];
+char msgBuff[8000];
+char keyBuff[8000];
+char encMsg[8000];
 
 
 /****************************************************************
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
   struct sockaddr_in serverAddress;
 
   // Check usage & args
-  if (argc < 3) { 
+  if (argc < 4) { 
     fprintf(stderr,"USAGE: %s hostname port\n", argv[0]); 
     exit(1); 
   } 
