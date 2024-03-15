@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_client
-Date: 3-12-24
+Date: 3-15-24
 */
 
 #include <stdio.h>
@@ -21,9 +21,9 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[8000];
-char msgBuff[8000];
-char keyBuff[8000];
-char encMsg[8000];
+char msgBuff[100000];
+char keyBuff[100000];
+char encMsg[100000];
 
 
 /****************************************************************

@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_server
-Date: 3-12-24
+Date: 3-15-24
 */
 
 
@@ -20,8 +20,8 @@ GLOBAL VARIABLES
 **********************************************************/
 char buffer[8000];
 int fileSize, charsRead, charsSent;
-char msgBuff[8800];
-char keyBuff[8000];
+char msgBuff[100000];
+char keyBuff[100000];
 
 // Error function used for reporting issues
 void error(const char *msg) {
