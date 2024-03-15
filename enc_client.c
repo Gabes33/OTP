@@ -20,10 +20,10 @@ Date: 3-12-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-char buffer[256];
-char msgBuff[1000];
-char keyBuff[1000];
-char encMsg[1000];
+char buffer[3000];
+char msgBuff[3000];
+char keyBuff[3000];
+char encMsg[3000];
 
 
 /****************************************************************
@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
 
   // Connect to server
   if (connect(socketFD, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0){
-    error("CLIENT: ERROR connecting");
+    error("CLIENT: ERROR connecting to Server Socket");
   }
 
   //Confirm connection with server is correct

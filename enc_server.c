@@ -14,13 +14,14 @@ Date: 3-12-24
 #include <netinet/in.h>
 #include <sys/wait.h>
 
+
 /*********************************************************
 GLOBAL VARIABLES
 **********************************************************/
-char buffer[500];
+char buffer[3000];
 int fileSize, charsRead, charsSent;
-char msgBuff[1001];
-char keyBuff[1001];
+char msgBuff[3000];
+char keyBuff[3000];
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -77,6 +78,7 @@ int main(int argc, char *argv[]){
     fprintf(stderr,"USAGE: %s port\n", argv[0]); 
     exit(1);
   } 
+  else {
   // Create the socket that will listen for connections
   int listenSocket = socket(AF_INET, SOCK_STREAM, 0);
   if (listenSocket < 0) {
@@ -92,6 +94,7 @@ int main(int argc, char *argv[]){
           sizeof(serverAddress)) < 0){
     error("ERROR on binding");
   }
+
   // Start listening for connections. Allow up to 5 connections to queue up
   listen(listenSocket, 5);
 
@@ -111,9 +114,9 @@ int main(int argc, char *argv[]){
       error("ERROR on accept");
     }
 
-    //printf("SERVER: Connected to client running at host %d port %d\n", 
-                          //ntohs(clientAddress.sin_addr.s_addr),
-                          //ntohs(clientAddress.sin_port));
+    printf("SERVER: Connected to client running at host %d port %d\n", 
+                          ntohs(clientAddress.sin_addr.s_addr),
+                          ntohs(clientAddress.sin_port));
 
    pid = fork();
    if (pid == -1) {
@@ -179,6 +182,7 @@ int main(int argc, char *argv[]){
        break;
        }
      exit(0);
+     //close(connectionSocket);
     
     // The parent process will continue on with other client sockets instead of
     // waiting on the current client socket child process
@@ -190,7 +194,7 @@ int main(int argc, char *argv[]){
   // Close the listening socket
   close(listenSocket); 
   return 0;
-
+  }
   }
 
 
