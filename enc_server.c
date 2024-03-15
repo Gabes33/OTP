@@ -18,7 +18,7 @@ Date: 3-15-24
 /*********************************************************
 GLOBAL VARIABLES
 **********************************************************/
-char buffer[80000];
+char buffer[10000];
 int fileSize, charsRead, charsSent;
 char msgBuff[80000];
 char keyBuff[80000];
