@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - dec_client
-Date: 3-15-24
+Date: 3-16-24
 */
 
 #include <stdio.h>
@@ -21,8 +21,6 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[3000];
-char msgBuff[3000];
-char keyBuff[3000];
 char encMsg[3000];
 
 
@@ -171,7 +169,6 @@ int main(int argc, char *argv[]) {
 
     //Receive the decrypted message and redirect it to stdout
     rcvDecryptMsg(socketFD, msgLength);
-    printf("%s", encMsg);
   }
 
 
@@ -362,7 +359,7 @@ void rcvDecryptMsg(int socket, int length) {
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
-    strcat(encMsg, buffer);
+    printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
   }
   

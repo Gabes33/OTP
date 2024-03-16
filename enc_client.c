@@ -21,8 +21,6 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[3000];
-//char msgBuff[3000];
-//char keyBuff[3000];
 char encMsg[3000];
 
 
@@ -121,16 +119,16 @@ int main(int argc, char *argv[]) {
   }
   else if (checkConnection == 1) {
     
+    //printf("Client says server connection is good!\n");
     int msgLength = checkLength(argv[1]);
+    //printf("Client got the message length\n");
     int keyLength = checkLength(argv[2]);
+    //printf("Client got the key length\n");
     if (msgLength > keyLength) {
         error("Message and key size are not equal");
         }
     validateFile(argv[1], msgLength);
     validateFile(argv[2], keyLength);
-
-    // Get input message from user
-    // printf("CLIENT: Enter text to send to the server, and then hit enter: ");
 
    // Clear out the buffer array
     memset(buffer, '\0', sizeof(buffer));
@@ -362,7 +360,6 @@ void rcvEncryptMsg(int socket, int length) {
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
-    //strcat(encMsg, buffer);
     printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
   }

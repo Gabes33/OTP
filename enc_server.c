@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_server
-Date: 3-15-24
+Date: 3-16-24
 */
 
 
@@ -20,8 +20,8 @@ GLOBAL VARIABLES
 **********************************************************/
 char buffer[3000];
 int fileSize, charsRead, charsSent;
-char msgBuff[3000];
-char keyBuff[3000];
+char msgBuff[80000];
+char keyBuff[80000];
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -125,14 +125,16 @@ int main(int argc, char *argv[]){
       if (clientConnectionConfirm(connectionSocket)) {
           char return_conf[] = "enc_val";
           int conf_length = strlen(return_conf);
-        
+          //printf("I'm the child of the Client and we're good!\n");
           charsSent = 0;
 
           //Send the confirmation that the sever got the validation string
           charsSent = send(connectionSocket, return_conf, conf_length, 0);
 
           fileSize = 0;
+          //printf("Server is gettng size...\n");
           fileSize = rcvSize(connectionSocket);
+          //printf("Server got the size!\n");
           if (fileSize == 0) {
             fprintf(stderr, "File size is zero.");
             }
@@ -146,11 +148,13 @@ int main(int argc, char *argv[]){
           charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
 
           rcvMsgInput(connectionSocket, fileSize);
+          //printf("Server recieved message: %s\n", msgBuff);
           if (sizeof(msgBuff) < fileSize) {
             fprintf(stderr, "Could not get messge input");
           }
    
           rcvKeyInput(connectionSocket, fileSize);
+          //printf("Server recieved key: %s\n", keyBuff);
           if (sizeof(keyBuff) < fileSize) {
             fprintf(stderr, "Could not get key input.");
           } 
@@ -171,6 +175,7 @@ int main(int argc, char *argv[]){
           while (charsSent < fileSize) {
             int msgLength = strlen(msgBuff);
             charsSent += send(connectionSocket, msgBuff, msgLength, 0);
+            //printf("characters sent: %d\n", charsSent);
             }
         exit(0);
       }
