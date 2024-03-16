@@ -362,7 +362,7 @@ void rcvEncryptMsg(int socket, int length) {
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
-    strcat(encMsg, buffer);
+    //strcat(encMsg, buffer);
     printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
   }
