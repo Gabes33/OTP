@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
 
   // Set up the address struct for the server socket
   setupAddressStruct(&serverAddress, atoi(argv[1]));
-i
+
   // Associate the socket to the port
   if (bind(listenSocket, 
           (struct sockaddr *)&serverAddress, 
