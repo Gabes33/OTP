@@ -21,7 +21,7 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[3000];
-char encMsg[3000];
+char decMsg[3000];
 
 
 /****************************************************************
@@ -343,7 +343,7 @@ RETURNS: Nothing, but the global encMsg buffer will contain the decrypted messag
 *********************************************************************************************/
 void rcvDecryptMsg(int socket, int length) {
 
-  memset(encMsg, '\0', sizeof(encMsg));
+  memset(decMsg, '\0', sizeof(decMsg));
   memset(buffer, '\0', sizeof(buffer));
   
   int totalBytes = 0;

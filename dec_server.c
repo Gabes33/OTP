@@ -124,10 +124,12 @@ int main(int argc, char *argv[]){
         char return_conf[] = "dec_val";
         int conf_length = strlen(return_conf);
         
+        charSent = 0;
+
         //Send the confirmation that the sever got the validation string
         charsSent = send(connectionSocket, return_conf, conf_length, 0);
 
-
+        fileSize = 0;
         fileSize = rcvSize(connectionSocket);
         if (fileSize == 0) {
           fprintf(stderr, "File size is zero.");
