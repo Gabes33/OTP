@@ -18,10 +18,10 @@ Date: 3-15-24
 /*********************************************************
 GLOBAL VARIABLES
 **********************************************************/
-char buffer[9000];
+char buffer[1000];
 int fileSize, charsRead, charsSent;
-char msgBuff[9000];
-char keyBuff[9000];
+char msgBuff[3000];
+char keyBuff[3000];
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -87,7 +87,7 @@ int main(int argc, char *argv[]){
 
   // Set up the address struct for the server socket
   setupAddressStruct(&serverAddress, atoi(argv[1]));
-
+i
   // Associate the socket to the port
   if (bind(listenSocket, 
           (struct sockaddr *)&serverAddress, 
@@ -99,8 +99,6 @@ int main(int argc, char *argv[]){
   listen(listenSocket, 5);
 
   while (1) {
-    // Start listening for connections. Allow up to 5 connections to queue up
-    //listen(listenSocket, 5);
      
     // Accept a connection, blocking if one is not available until one connects
     // Get the size of the address for the current client that will connect
@@ -128,10 +126,12 @@ int main(int argc, char *argv[]){
           char return_conf[] = "enc_val";
           int conf_length = strlen(return_conf);
         
+          charsSent = 0;
+
           //Send the confirmation that the sever got the validation string
           charsSent = send(connectionSocket, return_conf, conf_length, 0);
 
-
+          fileSize = 0;
           fileSize = rcvSize(connectionSocket);
           if (fileSize == 0) {
             fprintf(stderr, "File size is zero.");
@@ -141,13 +141,14 @@ int main(int argc, char *argv[]){
             }
           char size_conf[] = "confirmSize";
           int size_conf_length = strlen(size_conf);
+
+          charsSent = 0;
           charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
 
           rcvMsgInput(connectionSocket, fileSize);
           if (sizeof(msgBuff) < fileSize) {
             fprintf(stderr, "Could not get messge input");
           }
-          charsSent = 0;
    
           rcvKeyInput(connectionSocket, fileSize);
           if (sizeof(keyBuff) < fileSize) {

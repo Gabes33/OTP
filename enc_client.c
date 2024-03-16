@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_client
-Date: 3-15-24
+Date: 3-16-24
 */
 
 #include <stdio.h>
@@ -20,10 +20,10 @@ Date: 3-15-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-char buffer[8000];
-char msgBuff[8000];
-char keyBuff[8000];
-char encMsg[8000];
+char buffer[3000];
+//char msgBuff[3000];
+//char keyBuff[3000];
+char encMsg[3000];
 
 
 /****************************************************************
@@ -357,7 +357,7 @@ void rcvEncryptMsg(int socket, int length) {
     bytes = 0;
     bytes = recv(socket, buffer, sizeof(buffer), 0);
     
-    //We want to add the bytes in buffer to the message buffer as a string
+    //We want to add the bytes in buffer to the message buffer as a string with a null terminator
     sprintf(buffer, "%s", buffer);
     totalBytes += bytes;
 
