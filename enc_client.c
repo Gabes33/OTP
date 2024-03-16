@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 
     //Receive the encrypted message and redirect it to stdout
     rcvEncryptMsg(socketFD, msgLength);
-    printf("%s", encMsg);
+    //printf("%s", encMsg);
   }
 
 
@@ -363,6 +363,7 @@ void rcvEncryptMsg(int socket, int length) {
 
     //We now add the converted string to the messsage buffer
     strcat(encMsg, buffer);
+    printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
   }
   
