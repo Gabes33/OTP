@@ -356,7 +356,7 @@ void rcvEncryptMsg(int socket, int length) {
     bytes = recv(socket, buffer, sizeof(buffer), 0);
     
     //We want to add the bytes in buffer to the message buffer as a string with a null terminator
-    //sprintf(buffer, "%s", buffer);
+    sprintf(buffer, "%s", buffer);
     //strcat(buffer, "\0");
     totalBytes += bytes;
 
