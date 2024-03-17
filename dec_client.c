@@ -360,11 +360,12 @@ void rcvDecryptMsg(int socket, int length) {
     totalBytes += bytes;
     strcat(decMsg, buffer);
     //We now add the converted string to the messsage buffer
-    //printf("%s", buffer);
+    printf("%s", decMsg);
     memset(buffer, '\0', sizeof(buffer));
+    memset(decMsg, '\0', sizeof(decMsg));
   }
 
-  printf("%s", decMsg);
+  //printf("%s", decMsg);
   return;
 
 }
