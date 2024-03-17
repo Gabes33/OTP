@@ -368,8 +368,8 @@ void encMsg(char message[], char key[], int size) {
           }
 
       }
-
       }
+  message[size] = '\0';
   return;
 
 }
