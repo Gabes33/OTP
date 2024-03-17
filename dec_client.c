@@ -21,7 +21,7 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[3000];
-char decMsg[80000];
+char decMsg[3000];
 
 
 /****************************************************************
@@ -355,18 +355,18 @@ void rcvDecryptMsg(int socket, int length) {
     bytes = recv(socket, buffer, sizeof(buffer), 0);
     
     //We want to add the bytes in buffer to the message buffer as a string
-    sprintf(buffer, "%s", buffer);
-    strcat(buffer, "\0");
+    //sprintf(buffer, "%s", buffer);
+    //strcat(buffer, "\0");
     totalBytes += bytes;
-    strcat(decMsg, buffer);
+    //strcat(decMsg, buffer);
     //We now add the converted string to the messsage buffer
-    //printf("%s", buffer);
+    printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
     //memset(decMsg, '\0', sizeof(decMsg));
   }
-  strcat(decMsg, "\0");
-  fflush(stdout);
-  printf("%s", decMsg);
+  //strcat(decMsg, "\0");
+  //fflush(stdout);
+  //printf("%s", decMsg);
   return;
 
 }
