@@ -174,6 +174,7 @@ int main(int argc, char *argv[]){
 
           while (charsSent < fileSize) {
             int msgLength = strlen(msgBuff);
+            strcat(msgBuff, "\0");
             charsSent += send(connectionSocket, msgBuff, msgLength, 0);
             //printf("characters sent: %d\n", charsSent);
             }
