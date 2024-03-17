@@ -88,7 +88,7 @@ char *argv[]
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
-  char buffer[3000];
+  char buffer[3000] = {0};
 
   // Check usage & args
   if (argc < 4) { 
@@ -193,9 +193,8 @@ correct one
 
 *****************************************************************/
 
-char buffer[3000];
-
 int confirmServer(int socket) {
+    char buffer[3000] = {0};
     char validation[] = "dec_val";
     int val_length = strlen(validation);
     charsWritten = send(socket, validation, val_length, 0);
@@ -258,7 +257,7 @@ the buffer
 ***********************************************************************/
 void sendFile(int socket, char strFile[], int length){
 
- char buffer[3000];
+ char buffer[3000] = {0};
  memset(buffer, '\0', sizeof(buffer));
  int curBytes = 0;
  int strF = open(strFile, O_RDONLY);
@@ -346,9 +345,9 @@ RETURNS: Nothing, but the global encMsg buffer will contain the decrypted messag
 *********************************************************************************************/
 void rcvDecryptMsg(int socket, int length) {
 
-  char decMsg[3000];
+  char decMsg[3000] = {0};
   memset(decMsg, '\0', sizeof(decMsg));
-  char buffer[3000];
+  char buffer[3000] = {0};
 
   memset(buffer, '\0', sizeof(buffer));
   
@@ -370,7 +369,7 @@ void rcvDecryptMsg(int socket, int length) {
     memset(buffer, '\0', sizeof(buffer));
     //memset(decMsg, '\0', sizeof(decMsg));
   }
-  decMsg[length] = '\0';
+  //decMsg[length] = '\0';
 
   //strcat(decMsg, "\0");
   fflush(stdout);

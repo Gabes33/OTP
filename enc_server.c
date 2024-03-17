@@ -67,10 +67,10 @@ ARGUMENTS: int argc
 
 int main(int argc, char *argv[]){
   int connectionSocket;
-  char buffer[3000];
-  char msgBuff[3000];
-  char keyBuff[3000];
-  char encBuff[3000];
+  char buffer[3000] = {0};
+  char msgBuff[80000] = {0};
+  char keyBuff[80000] = {0};
+  char encBuff[80000] = {0};
 
   struct sockaddr_in serverAddress, clientAddress;
   socklen_t sizeOfClientInfo;
@@ -119,6 +119,7 @@ int main(int argc, char *argv[]){
                           ntohs(clientAddress.sin_addr.s_addr),
                           ntohs(clientAddress.sin_port));
 
+   memset(buffer, '\0', sizeof(buffer));
    pid = fork();
    if (pid == -1) {
    error("Error in establishing fork.\n");
@@ -144,6 +145,7 @@ int main(int argc, char *argv[]){
           else if (fileSize < 0) {
           fprintf(stderr,"Error retrieving the file size");
             }
+          printf("Server recieved file size of %d", fileSize);
           char size_conf[] = "confirmSize";
           int size_conf_length = strlen(size_conf);
 
@@ -167,6 +169,7 @@ int main(int argc, char *argv[]){
           memset(encBuff, '\0', sizeof(encBuff));
           encMsg(connectionSocket, msgBuff, keyBuff, encBuff, fileSize);
           printf("Received encrypted message: %s\n", encBuff);
+          printf("Encrypted message size is: %lu", strlen(encBuff));
 
           // Get the message from the client and display it
           memset(buffer, '\0', sizeof(buffer));
@@ -185,7 +188,7 @@ int main(int argc, char *argv[]){
             int msgLength = strlen(encBuff);
             //strcat(msgBuff, "\0");
             charsSent += send(connectionSocket, encBuff, msgLength, 0);
-            printf("characters sentrfrom server: %d\n", charsSent);
+            printf("characters sent from server: %d\n", charsSent);
             }
           memset(buffer, '\0', sizeof(buffer));
           exit(0);
@@ -265,7 +268,7 @@ that variable to an integer to get the size of the file sent through the socket
 *******************************************************************************/
 int rcvSize(int socket) {
   //Clear the buffer
-  char buffer[3000];
+  char buffer[3000] = {0};
   memset(buffer, '\0', sizeof(buffer));
   while (charsRead == 0) {
     //We get the size of the buffer - 1 to not account for newline character
@@ -293,7 +296,7 @@ void rcvMsgInput(int socket, char msg[], int size) {
   int bytes = 0;
   int byteTotal = 0;
 
-  char buffer[3000];
+  char buffer[3000] = {0};
   //memset(msg, '\0', sizeof(msg));
   //memset(buffer, '\0', sizeof(buffer));
   while (byteTotal < size) {
@@ -323,7 +326,7 @@ void rcvKeyInput(int socket, char key[], int size) {
   int bytes = 0;
   int byteTotal = 0;
 
-  char buffer[3000];
+  char buffer[3000] = {0};
   memset(buffer, '\0', sizeof(buffer));
   while (byteTotal < size) {
     memset(buffer, '\0', sizeof(buffer));

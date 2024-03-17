@@ -88,7 +88,7 @@ char *argv[]
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
-  char buffer[3000];
+  char buffer[3000] = {0};
 
   // Check usage & args
   if (argc < 4) { 
@@ -193,9 +193,9 @@ correct one
 
 
 *****************************************************************/
-char buffer[3000];
 
 int confirmServer(int socket) {
+    char buffer[1000] = {0};
     char validation[] = "enc_val";
     int val_length = strlen(validation);
     charsWritten = send(socket, validation, val_length, 0);
@@ -258,7 +258,7 @@ the buffer
 ***********************************************************************/
 void sendFile(int socket, char strFile[], int length){
 
- char buffer[3000];
+ char buffer[3000] = {0};
 
  memset(buffer, '\0', sizeof(buffer));
  int curBytes = 0;
@@ -349,8 +349,8 @@ void rcvEncryptMsg(int socket, int length) {
 
   //printf("Client encrypted bytes are a length of %d", length);
 
-  char buffer[3000];
-  char encMsg[3000];
+  char buffer[3000] = {0};
+  char encMsg[80000] = {0};
 
   memset(encMsg, '\0', sizeof(encMsg));
   memset(buffer, '\0', sizeof(buffer));
@@ -377,7 +377,7 @@ void rcvEncryptMsg(int socket, int length) {
   }
   //strcat(encMsg, "\0");
   //encMsg[length] = '\0';
-  fflush(stdout);
+  //fflush(stdout);
   printf("%s\n", encMsg);
   return;
 

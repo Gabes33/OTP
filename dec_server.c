@@ -67,10 +67,10 @@ ARGUMENTS: int argc
 
 int main(int argc, char *argv[]){
   int connectionSocket;
-  char buffer[3000];
-  char msgBuff[3000];
-  char keyBuff[3000];
-  char decBuff[3000];
+  char buffer[3000] = {0};
+  char msgBuff[3000] = {0};
+  char keyBuff[3000] = {0};
+  char decBuff[3000] = {0};
 
   struct sockaddr_in serverAddress, clientAddress;
   socklen_t sizeOfClientInfo;
@@ -117,7 +117,8 @@ int main(int argc, char *argv[]){
     printf("SERVER: Connected to client running at host %d port %d\n", 
                           ntohs(clientAddress.sin_addr.s_addr),
                           ntohs(clientAddress.sin_port));
-
+    
+    memset(buffer, '\0', sizeof(buffer));
     pid = fork();
     if (pid == -1) {
       error("Error in establishing fork.\n");
@@ -220,7 +221,7 @@ correct one
 ************************************************************************/
 
 int clientConnectionConfirm(int socket) {
-  char incoming_buff[100];
+  char incoming_buff[100] = {0};
   int char_rcv = 0;
 
   //Zero out entire buffer
@@ -255,7 +256,7 @@ that variable to an integer to get the size of the file sent through the socket
 *******************************************************************************/
 int rcvSize(int socket) {
 
-  char buffer[3000];
+  char buffer[3000] = {0};
 
   //Clear the buffer
   memset(buffer, '\0', sizeof(buffer));
@@ -284,7 +285,7 @@ void rcvMsgInput(int socket, char msg[], int size) {
   int bytes = 0;
   int byteTotal = 0;
 
-  char buffer[3000];
+  char buffer[3000] = {0};
   
   //memset(buffer, '\0', sizeof(buffer));
   while (byteTotal < size) {
@@ -314,7 +315,7 @@ void rcvKeyInput(int socket, char key[], int size) {
   int bytes = 0;
   int byteTotal = 0;
 
-  char buffer[3000];
+  char buffer[3000] = {0};
 
   //memset(buffer, '\0', sizeof(buffer));
   while (byteTotal < size) {
