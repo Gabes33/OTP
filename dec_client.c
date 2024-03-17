@@ -20,8 +20,8 @@ Date: 3-16-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-char buffer[3000];
-char decMsg[3000];
+//char buffer[3000];
+//char decMsg[3000];
 
 
 /****************************************************************
@@ -88,6 +88,7 @@ char *argv[]
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
+  char buffer[3000];
 
   // Check usage & args
   if (argc < 4) { 
@@ -192,6 +193,7 @@ correct one
 
 *****************************************************************/
 
+char buffer[3000];
 
 int confirmServer(int socket) {
     char validation[] = "dec_val";
@@ -256,6 +258,7 @@ the buffer
 ***********************************************************************/
 void sendFile(int socket, char strFile[], int length){
 
+ char buffer[3000];
  memset(buffer, '\0', sizeof(buffer));
  int curBytes = 0;
  int strF = open(strFile, O_RDONLY);
@@ -343,7 +346,10 @@ RETURNS: Nothing, but the global encMsg buffer will contain the decrypted messag
 *********************************************************************************************/
 void rcvDecryptMsg(int socket, int length) {
 
+  char decMsg[80000];
   memset(decMsg, '\0', sizeof(decMsg));
+  char buffer[3000];
+
   memset(buffer, '\0', sizeof(buffer));
   
   int totalBytes = 0;
@@ -358,15 +364,17 @@ void rcvDecryptMsg(int socket, int length) {
     sprintf(buffer, "%s", buffer);
     //strcat(buffer, "\0");
     totalBytes += bytes;
-    //strcat(decMsg, buffer);
+    strcat(decMsg, buffer);
     //We now add the converted string to the messsage buffer
-    printf("%s", buffer);
+    //printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
     //memset(decMsg, '\0', sizeof(decMsg));
   }
+  decMsg[length] = '\0';
+
   //strcat(decMsg, "\0");
-  //fflush(stdout);
-  //printf("%s", decMsg);
+  fflush(stdout);
+  printf("%s\n", decMsg);
   return;
 
 }

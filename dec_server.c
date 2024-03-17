@@ -17,10 +17,10 @@ Date: 3-16-24
 /*********************************************************
 GLOBAL VARIABLES
 **********************************************************/
-char buffer[3000];
+//char buffer[3000];
 int fileSize, charsRead, charsSent;
-char msgBuff[80000];
-char keyBuff[80000];
+//char msgBuff[80000];
+//char keyBuff[80000];
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -50,9 +50,9 @@ FUNCTION DECLARATIONS
 **********************************************************/
 int clientConnectionConfirm(int socket);
 int rcvSize(int socket);
-void rcvMsgInput(int socket, int size);
-void rcvKeyInput(int socket, int size);
-void decMsg(char message[], char key[], int size);
+void rcvMsgInput(int socket, char msg[], int size);
+void rcvKeyInput(int socket, char key[], int size);
+void decMsg(int socket, char message[], char key[], char dec[], int size);
 int convertInt(int curInt);
 
 
@@ -67,6 +67,10 @@ ARGUMENTS: int argc
 
 int main(int argc, char *argv[]){
   int connectionSocket;
+  char buffer[3000];
+  char msgBuff[80000];
+  char keyBuff[80000];
+  char decBuff[80000];
 
   struct sockaddr_in serverAddress, clientAddress;
   socklen_t sizeOfClientInfo;
@@ -121,6 +125,7 @@ int main(int argc, char *argv[]){
     }
     if (pid == 0) {
       if (clientConnectionConfirm(connectionSocket)) {
+        memset(buffer, '\0', sizeof(buffer));
         char return_conf[] = "dec_val";
         int conf_length = strlen(return_conf);
         
@@ -142,19 +147,20 @@ int main(int argc, char *argv[]){
         charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
 
         memset(msgBuff, '\0', sizeof(msgBuff));
-        rcvMsgInput(connectionSocket, fileSize);
+        rcvMsgInput(connectionSocket, msgBuff, fileSize);
         if (sizeof(msgBuff) < fileSize) {
           fprintf(stderr, "Could not get messge input");
         }
         charsSent = 0;
    
-        memset(msgBuff, '\0', sizeof(msgBuff));
-        rcvKeyInput(connectionSocket, fileSize);
+        memset(keyBuff, '\0', sizeof(keyBuff));
+        rcvKeyInput(connectionSocket, keyBuff, fileSize);
         if (sizeof(keyBuff) < fileSize) {
           fprintf(stderr, "Could not get key input.");
        } 
        
-        decMsg(msgBuff, keyBuff, fileSize);
+        memset(decBuff, '\0', sizeof(decBuff));
+        decMsg(connectionSocket,msgBuff, keyBuff, decBuff, fileSize);
 
         // Get the message from the client and display it
         memset(buffer, '\0', sizeof(buffer));
@@ -171,8 +177,9 @@ int main(int argc, char *argv[]){
         while (charsSent < fileSize) {
           int msgLength = strlen(msgBuff);
           //strcat(msgBuff, "\0");
-          charsSent += send(connectionSocket, msgBuff, msgLength, 0);
+          charsSent += send(connectionSocket, decBuff, msgLength, 0);
         }
+        memset(buffer, '\0', sizeof(buffer));
         exit(0);
       }
       else {
@@ -247,6 +254,9 @@ buffer. We can assign the result of the rcv() function to a variable and convert
 that variable to an integer to get the size of the file sent through the socket
 *******************************************************************************/
 int rcvSize(int socket) {
+
+  char buffer[3000];
+
   //Clear the buffer
   memset(buffer, '\0', sizeof(buffer));
   while (charsRead == 0) {
@@ -270,18 +280,20 @@ int size - the size expected of the message being sent over
 
 RETURNS: Nothing, but the message buffer is filled with the incoming message
 *****************************************************************************/
-void rcvMsgInput(int socket, int size) {
+void rcvMsgInput(int socket, char msg[], int size) {
   int bytes = 0;
   int byteTotal = 0;
 
-  memset(msgBuff, '\0', sizeof(msgBuff));
+  char buffer[3000];
+  
+  //memset(buffer, '\0', sizeof(buffer));
   while (byteTotal < size) {
     // The buffer is cleared each time in order to get another section of bytes from the client socket
     memset(buffer, '\0', sizeof(buffer));
     bytes = recv(socket, buffer, sizeof(buffer) - 1, 0);
     byteTotal += bytes;
     // We add the section of bytes to the msgBuff
-    strcat(msgBuff, buffer);
+    strcat(msg, buffer);
   }
   return;
 }
@@ -298,16 +310,18 @@ int size - the size expected of tbe  key being sent over
 
 RETURNS: Nothing, but the key buffer is filled with the incoming key message
 *****************************************************************************/
-void rcvKeyInput(int socket, int size) {
+void rcvKeyInput(int socket, char key[], int size) {
   int bytes = 0;
   int byteTotal = 0;
 
-  memset(keyBuff, '\0', sizeof(keyBuff));
+  char buffer[3000];
+
+  //memset(buffer, '\0', sizeof(buffer));
   while (byteTotal < size) {
     memset(buffer, '\0', sizeof(buffer));
     bytes = recv(socket, buffer, sizeof(buffer) - 1, 0);
     byteTotal += bytes;
-    strcat(keyBuff, buffer);
+    strcat(key, buffer);
   }
   return;
 }
@@ -328,10 +342,11 @@ As expected, the message and key need to be the same size
 
 RETURNS: Nothing, but the message buffer now contains the decoded message
 ******************************************************************************/
-void decMsg(char message[], char key[], int size) {
+void decMsg(int socket, char message[], char key[], char dec[], int size) {
 
   // We start at the first capital letter A, which is 0 for our numerical value
   int startLetter = 'A', msgChar, keyChar;
+  
 
   for (int i = 0; i < size; i++) {
 
@@ -358,18 +373,19 @@ void decMsg(char message[], char key[], int size) {
       //message buffer
 
       if (msgChar == 64 || msgChar == 26) {
-        message[i] = ' ';
+       dec[i] = ' ';
       }
       else {
         msgChar = startLetter + msgChar;
-        message[i] = (char)msgChar;
+        dec[i] = (char)msgChar;
 
           }
 
       }
 
       }
-  message[size] = '\0';
+  dec[size] = '\n';
+
   return;
 
 }

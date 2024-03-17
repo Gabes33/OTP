@@ -20,8 +20,8 @@ Date: 3-16-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-char buffer[3000];
-char encMsg[3000];
+//char buffer[3000];
+//'char encMsg[3000];
 
 
 /****************************************************************
@@ -88,6 +88,7 @@ char *argv[]
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
+  char buffer[3000];
 
   // Check usage & args
   if (argc < 4) { 
@@ -192,7 +193,7 @@ correct one
 
 
 *****************************************************************/
-
+char buffer[3000];
 
 int confirmServer(int socket) {
     char validation[] = "enc_val";
@@ -256,6 +257,8 @@ RETURNS: Nothing, but the file has been read and sent to the server socket throu
 the buffer
 ***********************************************************************/
 void sendFile(int socket, char strFile[], int length){
+
+ char buffer[3000];
 
  memset(buffer, '\0', sizeof(buffer));
  int curBytes = 0;
@@ -344,6 +347,11 @@ RETURNS: Nothing, but the global encMsg buffer will contain the encrypted messag
 *********************************************************************************************/
 void rcvEncryptMsg(int socket, int length) {
 
+  //printf("Client encrypted bytes are a length of %d", length);
+
+  char buffer[3000];
+  char encMsg[80000];
+
   memset(encMsg, '\0', sizeof(encMsg));
   memset(buffer, '\0', sizeof(buffer));
   
@@ -354,6 +362,7 @@ void rcvEncryptMsg(int socket, int length) {
   while (totalBytes < length - 1) {
     bytes = 0;
     bytes = recv(socket, buffer, sizeof(buffer), 0);
+    //printf("Client received %d encrypted bytes\n", bytes);
     
     //We want to add the bytes in buffer to the message buffer as a string with a null terminator
     sprintf(buffer, "%s", buffer);
@@ -361,15 +370,15 @@ void rcvEncryptMsg(int socket, int length) {
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
-    //strcat(encMsg, buffer);
-    printf("%s", buffer);
+    strcat(encMsg, buffer);
+    //printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
 
   }
   //strcat(encMsg, "\0");
   //encMsg[length] = '\0';
-  //fflush(stdout);
-  //printf("%s", encMsg);
+  fflush(stdout);
+  printf("%s\n", encMsg);
   return;
 
 }
