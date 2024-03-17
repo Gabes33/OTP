@@ -356,7 +356,7 @@ void rcvDecryptMsg(int socket, int length) {
     
     //We want to add the bytes in buffer to the message buffer as a string
     sprintf(buffer, "%s", buffer);
-    strcat(buffer, "\0");
+    //strcat(buffer, "\0");
     totalBytes += bytes;
     strcat(decMsg, buffer);
     //We now add the converted string to the messsage buffer
