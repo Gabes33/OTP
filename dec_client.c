@@ -358,11 +358,11 @@ void rcvDecryptMsg(int socket, int length) {
     sprintf(buffer, "%s", buffer);
     //strcat(buffer, "\0");
     totalBytes += bytes;
-    strcat(decMsg, buffer);
+    //strcat(decMsg, buffer);
     //We now add the converted string to the messsage buffer
-    printf("%s", decMsg);
+    printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
-    memset(decMsg, '\0', sizeof(decMsg));
+    //memset(decMsg, '\0', sizeof(decMsg));
   }
 
   //printf("%s", decMsg);
