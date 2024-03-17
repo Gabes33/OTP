@@ -21,7 +21,7 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[3000];
-char encMsg[3000];
+char encMsg[80000];
 
 
 /****************************************************************
@@ -357,13 +357,18 @@ void rcvEncryptMsg(int socket, int length) {
     
     //We want to add the bytes in buffer to the message buffer as a string with a null terminator
     sprintf(buffer, "%s", buffer);
+    strcat(buffer, "\0");
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
-    printf("%s", buffer);
+    strcat(encMsg, buffer);
+    //printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
+
   }
-  
+  //encMsg[length] = '\0';
+  //fflush(stdout);
+  printf("%s", encMsg);
   return;
 
 }
