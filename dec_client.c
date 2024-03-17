@@ -20,9 +20,9 @@ Date: 3-15-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-char buffer[3000];
-char msgBuff[3000];
-char keyBuff[3000];
+char buffer[3000] = {0};
+//char msgBuff[3000];
+//char keyBuff[3000];
 char encMsg[3000];
 
 
