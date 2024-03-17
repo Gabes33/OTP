@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - dec_client
-Date: 3-16-24
+Date: 3-15-24
 */
 
 #include <stdio.h>
@@ -20,8 +20,10 @@ Date: 3-16-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-//char buffer[3000];
-//char decMsg[3000];
+char buffer[3000];
+char msgBuff[3000];
+char keyBuff[3000];
+char encMsg[3000];
 
 
 /****************************************************************
@@ -88,7 +90,6 @@ char *argv[]
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
-  char buffer[3000] = {0};
 
   // Check usage & args
   if (argc < 4) { 
@@ -170,6 +171,7 @@ int main(int argc, char *argv[]) {
 
     //Receive the decrypted message and redirect it to stdout
     rcvDecryptMsg(socketFD, msgLength);
+    printf("%s", encMsg);
   }
 
 
@@ -193,8 +195,8 @@ correct one
 
 *****************************************************************/
 
+
 int confirmServer(int socket) {
-    char buffer[3000] = {0};
     char validation[] = "dec_val";
     int val_length = strlen(validation);
     charsWritten = send(socket, validation, val_length, 0);
@@ -257,7 +259,6 @@ the buffer
 ***********************************************************************/
 void sendFile(int socket, char strFile[], int length){
 
- char buffer[3000] = {0};
  memset(buffer, '\0', sizeof(buffer));
  int curBytes = 0;
  int strF = open(strFile, O_RDONLY);
@@ -345,10 +346,7 @@ RETURNS: Nothing, but the global encMsg buffer will contain the decrypted messag
 *********************************************************************************************/
 void rcvDecryptMsg(int socket, int length) {
 
-  char decMsg[3000] = {0};
-  memset(decMsg, '\0', sizeof(decMsg));
-  char buffer[3000] = {0};
-
+  memset(encMsg, '\0', sizeof(encMsg));
   memset(buffer, '\0', sizeof(buffer));
   
   int totalBytes = 0;
@@ -361,19 +359,14 @@ void rcvDecryptMsg(int socket, int length) {
     
     //We want to add the bytes in buffer to the message buffer as a string
     sprintf(buffer, "%s", buffer);
-    //strcat(buffer, "\0");
     totalBytes += bytes;
-    strcat(decMsg, buffer);
-    //We now add the converted string to the messsage buffer
-    //printf("%s", buffer);
-    memset(buffer, '\0', sizeof(buffer));
-    //memset(decMsg, '\0', sizeof(decMsg));
-  }
-  //decMsg[length] = '\0';
 
-  //strcat(decMsg, "\0");
-  fflush(stdout);
-  printf("%s\n", decMsg);
+    //We now add the converted string to the messsage buffer
+    strcat(encMsg, buffer);
+    memset(buffer, '\0', sizeof(buffer));
+  }
+  
   return;
 
 }
+

@@ -20,8 +20,10 @@ Date: 3-16-24
 GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
-//char buffer[3000];
-//'char encMsg[3000];
+char buffer[3000];
+//char msgBuff[3000];
+//char keyBuff[3000];
+char encMsg[3000];
 
 
 /****************************************************************
@@ -88,7 +90,6 @@ char *argv[]
 int main(int argc, char *argv[]) {
   int socketFD, portNumber;
   struct sockaddr_in serverAddress;
-  char buffer[3000] = {0};
 
   // Check usage & args
   if (argc < 4) { 
@@ -120,16 +121,16 @@ int main(int argc, char *argv[]) {
   }
   else if (checkConnection == 1) {
     
-    //printf("Client says server connection is good!\n");
     int msgLength = checkLength(argv[1]);
-    //printf("Client got the message length\n");
     int keyLength = checkLength(argv[2]);
-    //printf("Client got the key length\n");
     if (msgLength > keyLength) {
         error("Message and key size are not equal");
         }
     validateFile(argv[1], msgLength);
     validateFile(argv[2], keyLength);
+
+    // Get input message from user
+    // printf("CLIENT: Enter text to send to the server, and then hit enter: ");
 
    // Clear out the buffer array
     memset(buffer, '\0', sizeof(buffer));
@@ -194,8 +195,8 @@ correct one
 
 *****************************************************************/
 
+
 int confirmServer(int socket) {
-    char buffer[1000] = {0};
     char validation[] = "enc_val";
     int val_length = strlen(validation);
     charsWritten = send(socket, validation, val_length, 0);
@@ -257,8 +258,6 @@ RETURNS: Nothing, but the file has been read and sent to the server socket throu
 the buffer
 ***********************************************************************/
 void sendFile(int socket, char strFile[], int length){
-
- char buffer[3000] = {0};
 
  memset(buffer, '\0', sizeof(buffer));
  int curBytes = 0;
@@ -347,11 +346,6 @@ RETURNS: Nothing, but the global encMsg buffer will contain the encrypted messag
 *********************************************************************************************/
 void rcvEncryptMsg(int socket, int length) {
 
-  //printf("Client encrypted bytes are a length of %d", length);
-
-  char buffer[3000] = {0};
-  char encMsg[80000] = {0};
-
   memset(encMsg, '\0', sizeof(encMsg));
   memset(buffer, '\0', sizeof(buffer));
   
@@ -362,25 +356,20 @@ void rcvEncryptMsg(int socket, int length) {
   while (totalBytes < length - 1) {
     bytes = 0;
     bytes = recv(socket, buffer, sizeof(buffer), 0);
-    //printf("Client received %d encrypted bytes\n", bytes);
     
     //We want to add the bytes in buffer to the message buffer as a string with a null terminator
     sprintf(buffer, "%s", buffer);
-    //strcat(buffer, "\0");
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
-    strcat(encMsg, buffer);
-    //printf("%s", buffer);
+    //strcat(encMsg, buffer);
+    printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
-
   }
-  //strcat(encMsg, "\0");
-  //encMsg[length] = '\0';
-  //fflush(stdout);
-  printf("%s\n", encMsg);
+  
   return;
 
 }
+
 
 
