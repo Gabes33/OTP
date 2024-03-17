@@ -19,8 +19,8 @@ GLOBAL VARIABLES
 **********************************************************/
 char buffer[3000] = {0};
 int fileSize, charsRead, charsSent;
-char msgBuff[80000] = {0};
-char keyBuff[80000] = {0};
+char msgBuff[100000] = {0};
+char keyBuff[100000] = {0};
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -364,6 +364,7 @@ void decMsg(char message[], char key[], int size) {
       }
 
       }
+  message[size] = '\0';
   return;
 
 }

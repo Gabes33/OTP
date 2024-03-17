@@ -23,7 +23,7 @@ int charsWritten, charsRead;
 char buffer[3000] = {0};
 //char msgBuff[3000];
 //char keyBuff[3000];
-char encMsg[3000];
+char encMsg[100000] = {0};
 
 
 /****************************************************************
@@ -358,14 +358,15 @@ void rcvDecryptMsg(int socket, int length) {
     bytes = recv(socket, buffer, sizeof(buffer), 0);
     
     //We want to add the bytes in buffer to the message buffer as a string
-    sprintf(buffer, "%s", buffer);
+    //sprintf(buffer, "%s", buffer);
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
     strcat(encMsg, buffer);
     memset(buffer, '\0', sizeof(buffer));
   }
-  
+  strcat(encMsg, "\n");
+  printf("%s", encMsg);
   return;
 
 }
