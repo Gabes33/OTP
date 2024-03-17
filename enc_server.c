@@ -176,7 +176,7 @@ int main(int argc, char *argv[]){
             int msgLength = strlen(msgBuff);
             //strcat(msgBuff, "\0");
             charsSent += send(connectionSocket, msgBuff, msgLength, 0);
-            //printf("characters sent: %d\n", charsSent);
+            printf("characters sent: %d\n", charsSent);
             }
         exit(0);
       }
