@@ -365,7 +365,6 @@ void rcvDecryptMsg(int socket, int length) {
     strcat(encMsg, buffer);
     memset(buffer, '\0', sizeof(buffer));
   }
-  strcat(encMsg, "\n");
   printf("%s", encMsg);
   return;
 
