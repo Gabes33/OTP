@@ -346,7 +346,7 @@ RETURNS: Nothing, but the global encMsg buffer will contain the decrypted messag
 *********************************************************************************************/
 void rcvDecryptMsg(int socket, int length) {
 
-  char decMsg[80000];
+  char decMsg[3000];
   memset(decMsg, '\0', sizeof(decMsg));
   char buffer[3000];
 

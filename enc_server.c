@@ -68,9 +68,9 @@ ARGUMENTS: int argc
 int main(int argc, char *argv[]){
   int connectionSocket;
   char buffer[3000];
-  char msgBuff[80000];
-  char keyBuff[80000];
-  char encBuff[80000];
+  char msgBuff[3000];
+  char keyBuff[3000];
+  char encBuff[3000];
 
   struct sockaddr_in serverAddress, clientAddress;
   socklen_t sizeOfClientInfo;
@@ -185,7 +185,7 @@ int main(int argc, char *argv[]){
             int msgLength = strlen(encBuff);
             //strcat(msgBuff, "\0");
             charsSent += send(connectionSocket, encBuff, msgLength, 0);
-            printf("characters sent from server: %d\n", charsSent);
+            printf("characters sentrfrom server: %d\n", charsSent);
             }
           memset(buffer, '\0', sizeof(buffer));
           exit(0);

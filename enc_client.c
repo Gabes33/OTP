@@ -350,7 +350,7 @@ void rcvEncryptMsg(int socket, int length) {
   //printf("Client encrypted bytes are a length of %d", length);
 
   char buffer[3000];
-  char encMsg[80000];
+  char encMsg[3000];
 
   memset(encMsg, '\0', sizeof(encMsg));
   memset(buffer, '\0', sizeof(buffer));
