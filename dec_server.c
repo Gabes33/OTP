@@ -141,12 +141,14 @@ int main(int argc, char *argv[]){
         int size_conf_length = strlen(size_conf);
         charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
 
+        memset(msgBuff, '\0', sizeof(msgBuff));
         rcvMsgInput(connectionSocket, fileSize);
         if (sizeof(msgBuff) < fileSize) {
           fprintf(stderr, "Could not get messge input");
         }
         charsSent = 0;
    
+        memset(msgBuff, '\0', sizeof(msgBuff));
         rcvKeyInput(connectionSocket, fileSize);
         if (sizeof(keyBuff) < fileSize) {
           fprintf(stderr, "Could not get key input.");

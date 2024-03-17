@@ -20,8 +20,8 @@ GLOBAL VARIABLES
 **********************************************************/
 char buffer[3000];
 int fileSize, charsRead, charsSent;
-char msgBuff[3000];
-char keyBuff[3000];
+char msgBuff[80000];
+char keyBuff[80000];
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -134,25 +134,30 @@ int main(int argc, char *argv[]){
           fileSize = 0;
           //printf("Server is gettng size...\n");
           fileSize = rcvSize(connectionSocket);
+
           //printf("Server got the size!\n");
           if (fileSize == 0) {
             fprintf(stderr, "File size is zero.");
             }
+
           else if (fileSize < 0) {
           fprintf(stderr,"Error retrieving the file size");
             }
+
           char size_conf[] = "confirmSize";
           int size_conf_length = strlen(size_conf);
 
           charsSent = 0;
           charsSent = send(connectionSocket, size_conf, size_conf_length, 0);
-
+          
+          memset(msgBuff, '\0', sizeof(msgBuff));
           rcvMsgInput(connectionSocket, fileSize);
           //printf("Server recieved message: %s\n", msgBuff);
           if (sizeof(msgBuff) < fileSize) {
             fprintf(stderr, "Could not get messge input");
           }
-   
+          
+          memset(keyBuff, '\0', sizeof(keyBuff));
           rcvKeyInput(connectionSocket, fileSize);
           //printf("Server recieved key: %s\n", keyBuff);
           if (sizeof(keyBuff) < fileSize) {
