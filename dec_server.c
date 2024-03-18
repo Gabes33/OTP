@@ -51,7 +51,7 @@ FUNCTION DECLARATIONS
 int clientConnectionConfirm(int socket);
 int rcvSize(int socket);
 void rcvMsgInput(int socket,char msgBuff[], int size);
-void rcvKeyInput(int socket,char keyBuff[], int size);
+void rcvKeyInput(int socket,char msgBuff[], int size);
 void decMsg(char message[], char key[], int size);
 int convertInt(int curInt);
 
@@ -157,6 +157,7 @@ int main(int argc, char *argv[]){
        } 
        
         decMsg(msgBuff, keyBuff, fileSize);
+        msgBuff[fileSize] = '\0';
 
         // Get the message from the client and display it
         memset(buffer, '\0', sizeof(buffer));
@@ -376,11 +377,12 @@ void decMsg(char message[], char key[], int size) {
         message[i] = (char)msgChar;
 
           }
+      if (i == size) {
+        message[i] = '\0';
 
       }
 
       }
-  //message[size] = '\0';
   return;
 
 }
