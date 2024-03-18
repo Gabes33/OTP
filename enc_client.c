@@ -366,7 +366,7 @@ void rcvEncryptMsg(int socket, int length) {
     //printf("%s", buffer);
     memset(buffer, '\0', sizeof(buffer));
   }
-  strcat(encMsg, "\n");
+  strcat(encMsg, "\0");
   printf("%s", encMsg);
   return;
 
