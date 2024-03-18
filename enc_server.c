@@ -164,6 +164,7 @@ int main(int argc, char *argv[]){
           } 
         
           encMsg(msgBuff, keyBuff, fileSize);
+          msgBuff[fileSize] = '\0';
 
           // Get the message from the client and display it
           memset(buffer, '\0', sizeof(buffer));
@@ -379,7 +380,9 @@ void encMsg(char message[], char key[], int size) {
           }
 
       }
-
+    if (i == size) {
+      message[i] = '\0';
+    }
       }
   return;
 

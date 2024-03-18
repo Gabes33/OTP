@@ -380,7 +380,7 @@ void decMsg(char message[], char key[], int size) {
       }
 
       }
-  message[size] = '\0';
+  //message[size] = '\0';
   return;
 
 }

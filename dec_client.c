@@ -23,7 +23,7 @@ int charsWritten, charsRead;
 char buffer[3000] = {0};
 //char msgBuff[3000];
 //char keyBuff[3000];
-char encMsg[100000] = {0};
+char decMsg[100000] = {0};
 
 
 /****************************************************************
@@ -171,7 +171,7 @@ int main(int argc, char *argv[]) {
 
     //Receive the decrypted message and redirect it to stdout
     rcvDecryptMsg(socketFD, msgLength);
-    printf("%s", encMsg);
+    //printf("%s", decMsg);
   }
 
 
@@ -346,7 +346,7 @@ RETURNS: Nothing, but the global encMsg buffer will contain the decrypted messag
 *********************************************************************************************/
 void rcvDecryptMsg(int socket, int length) {
 
-  memset(encMsg, '\0', sizeof(encMsg));
+  memset(decMsg, '\0', sizeof(decMsg));
   memset(buffer, '\0', sizeof(buffer));
   
   int totalBytes = 0;
@@ -358,14 +358,15 @@ void rcvDecryptMsg(int socket, int length) {
     bytes = recv(socket, buffer, sizeof(buffer), 0);
     
     //We want to add the bytes in buffer to the message buffer as a string
-    //sprintf(buffer, "%s", buffer);
+    sprintf(buffer, "%s", buffer);
     totalBytes += bytes;
 
     //We now add the converted string to the messsage buffer
-    strcat(encMsg, buffer);
+    strcat(decMsg, buffer);
     memset(buffer, '\0', sizeof(buffer));
   }
-  printf("%s", encMsg);
+  strcat(decMsg, "\n");
+  printf("%s", decMsg);
   return;
 
 }
