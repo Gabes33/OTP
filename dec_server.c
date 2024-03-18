@@ -377,10 +377,11 @@ void decMsg(char message[], char key[], int size) {
         message[i] = (char)msgChar;
 
           }
-      if (i == size) {
-        message[i] = '\0';
 
       }
+    if (i == size) {
+      message[i] = '\0';
+    }
 
       }
   return;

@@ -171,7 +171,6 @@ int main(int argc, char *argv[]) {
 
     //Receive the decrypted message and redirect it to stdout
     rcvDecryptMsg(socketFD, msgLength);
-    //printf("%s", decMsg);
   }
 
 
