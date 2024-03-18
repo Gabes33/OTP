@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - dec_client
-Date: 3-15-24
+Date: 3-17-24
 */
 
 #include <stdio.h>
@@ -21,8 +21,6 @@ GLOBAL VARIABLES
 ****************************************************************/
 int charsWritten, charsRead;
 char buffer[3000] = {0};
-//char msgBuff[3000];
-//char keyBuff[3000];
 char decMsg[100000] = {0};
 
 
@@ -151,21 +149,13 @@ int main(int argc, char *argv[]) {
     }
     memset(buffer, '\0', sizeof(buffer));
 
-    //We send the message file contents to the server and wait to confirm the server recieved
-    //the message
+    //We send the message file contents to the server
     sendFile(socketFD, argv[1], msgLength);
-    while (charsRead == 0) {
-      charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
-    }
     
     memset(buffer, '\0', sizeof(buffer));
     
-    // We send the key file contents to the server and wait to confirm the server recieved the
-    // key
+    // We send the key file contents to the server
     sendFile(socketFD, argv[2], keyLength);
-    while (charsRead == 0) {
-      charsRead = recv(socketFD, buffer, sizeof(buffer) - 1, 0);
-    }
     
     memset(buffer, '\0', sizeof(buffer));
 

@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - enc_server
-Date: 3-15-24
+Date: 3-17-24
 */
 
 
@@ -18,10 +18,7 @@ Date: 3-15-24
 /*********************************************************
 GLOBAL VARIABLES
 **********************************************************/
-//char buffer[3000] = {0};
 int fileSize, charsRead, charsSent;
-//char msgBuff[100000] = {0};
-//char keyBuff[100000] = {0};
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -192,7 +189,6 @@ int main(int argc, char *argv[]){
        break;
        }
      exit(0);
-     //close(connectionSocket);
     
     // The parent process will continue on with other client sockets instead of
     // waiting on the current client socket child process
@@ -309,7 +305,7 @@ ARGUMENTS:
 int socket - client socket file descriptor that can send a file over of the
 expected size
 
-char keyBuff[] - key buffer that recieves incoming key
+char keyBuff[] - key buffer that recieves incoming key only up to the size needed
 
 int size - the size expected of tbe  key being sent over
 

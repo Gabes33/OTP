@@ -1,7 +1,7 @@
 /*
 Name: Tyler Gebel
 Assignment: OTP - dec_server
-Date: 3-15-24
+Date: 3-17-24
 */
 
 
@@ -17,10 +17,7 @@ Date: 3-15-24
 /*********************************************************
 GLOBAL VARIABLES
 **********************************************************/
-//char buffer[3000] = {0};
 int fileSize, charsRead, charsSent;
-//char msgBuff[100000] = {0};
-//char keyBuff[100000] = {0};
 
 // Error function used for reporting issues
 void error(const char *msg) {
@@ -302,7 +299,7 @@ ARGUMENTS:
 int socket - client socket file descriptor that can send a file over of the
 expected size
 
-char keyBuff[] - key buffer that will recieve incoming key message
+char keyBuff[] - key buffer that will recieve incoming key message up to needed size
 
 int size - the size expected of tbe  key being sent over
 
@@ -362,7 +359,7 @@ void decMsg(char message[], char key[], int size) {
         msgChar += 27;
       }
       //We have converted the integer to the correct integer and then used modulo 27 to convert to the right
-      //numer`ical value. The message character is subtracted from the key character for decryption instead of using
+      //numerical value. The message character is subtracted from the key character for decryption instead of using
       //addition like with encryption. If this calcualation ends up being negative, we add 27 to account for 26 capitol letters and 
       //the space character. If the integer is 26, the numerical value is a space character. If it is 64, it the ASCII value for the
       //space character. Otherwise, we take the converted integer and add the start letter, which ASCII value is 65, to it to get the
